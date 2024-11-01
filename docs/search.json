@@ -11,7 +11,7 @@
     "href": "index.html",
     "title": "Elise Hachfeld",
     "section": "",
-    "text": "Hello! My name is Elise Hachfeld and I am a junior at St. Olaf College.\n1 + 1\n\n[1] 2"
+    "text": "Hello! My name is Elise Hachfeld and I am a junior at St. Olaf College. I am majoring in Bioinformatics with concentrations in statistics & data science, neuroscience, and nordic studies."
   },
   {
     "objectID": "index.html#education",
@@ -39,7 +39,7 @@
     "href": "projects.html",
     "title": "projects",
     "section": "",
-    "text": "Interactive Plots\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nUnited States Nursing Home Data\n\n\nExploratory Data Analysis of US Nursing Home Data from the Skilled Nursing Facility Cost Report (Data.CMS.gov)\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nStatic Plots\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nNo matching items"
+    "text": "Ecological Data\n\n\n???\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nGutenberg Data\n\n\nAcquiring Text Data from Gutenberg.org\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nUnited States Nursing Home Data\n\n\nExploratory Data Analysis of US Nursing Home Data from the Skilled Nursing Facility Cost Report (Data.CMS.gov)\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nUnited States Nursing Home Data\n\n\nExploratory Data Analysis of US Nursing Home Data from the Skilled Nursing Facility Cost Report (Data.CMS.gov)\n\n\n\n\n\n\n\n\n\n\n\n\nNo matching items"
   },
   {
     "objectID": "projects/US_nursing_homes/US_nursing_homes.html",
@@ -88,28 +88,28 @@
     "href": "projects/US_nursing_homes/index.html#plot-1-numeric-variable",
     "title": "United States Nursing Home Data",
     "section": "Plot 1 (Numeric variable)",
-    "text": "Plot 1 (Numeric variable)\n\nnursing_summary |&gt;\n  ggplot(aes(long, lat, group = group)) + \n  geom_polygon(aes(fill = beds_10k), color = \"black\") + \n  labs(title = \"Nursing Home Beds Available Nationwide\",\n       fill = \"Beds Per\\n10,000 People\",\n       caption = \"Skilled Nursing Facility Cost Report (Data.CMS.gov)\\n2020 Decennial Population Data (pewtrusts.org) \") +\n  coord_map() +\n  theme_void() +\n  theme(legend.position = \"bottom\",\n        plot.caption = element_text(hjust = 0),\n                plot.title = element_text(face = \"bold\"),\n                legend.title = element_text(face = \"bold\")) +\n  scale_fill_viridis()  \n\n\n\n\n\n\n\nfavstats(~beds_10k, data = nursing_summary)\n\n      min       Q1   median       Q3      max     mean       sd     n missing\n 21.07186 43.97446 51.82551 62.96279 101.0228 53.93941 16.72434 15527       0\n\n\nAlt-Text: This choropleth plot displays the 48 contiguous US states colored by the number of nursing home beds available per 10,000 people. The data ranges from about 21 to 101 beds per 10,000 people. The western half of the US has a relatively low number of beds, while the Midwest has more. Iowa has the greatest number of beds. The data were obtained from the Skilled Nursing Facility Cost Report and 2020 Decennial Population Data.\nSANILAC COUNTY MEDICAL CARE FACILITY of MI had 22,287 beds and was removed from the data for this analysis."
+    "text": "Plot 1 (Numeric variable)\n\n\n\n\n\n\n\n\n\n      min       Q1   median       Q3      max     mean       sd     n missing\n 21.07186 43.97446 51.82551 62.96279 101.0228 53.93941 16.72434 15527       0\n\n\nAlt-Text: This choropleth plot displays the 48 contiguous US states colored by the number of nursing home beds available per 10,000 people. The data ranges from about 21 to 101 beds per 10,000 people. The western half of the US has a relatively low number of beds, while the Midwest has more. Iowa has the greatest number of beds. The data were obtained from the Skilled Nursing Facility Cost Report and 2020 Decennial Population Data.\nSANILAC COUNTY MEDICAL CARE FACILITY of MI had 22,287 beds and was removed from the data for this analysis."
   },
   {
     "objectID": "projects/US_nursing_homes/index.html#plot-2-categorical-variable",
     "href": "projects/US_nursing_homes/index.html#plot-2-categorical-variable",
     "title": "United States Nursing Home Data",
     "section": "Plot 2 (categorical variable)",
-    "text": "Plot 2 (categorical variable)\nNote: I created both my categorical variables from numerical variables in the data set because there weren’t any appropriate existing variables.\n\nnursing_summary |&gt;\n  ggplot(mapping = aes(x = long, y = lat, group = group)) + \n    geom_polygon(aes(fill = top_control_type), color = \"black\") + \n    coord_map() + \n    theme_void() +  \n  theme(legend.position = \"bottom\",\n        plot.caption = element_text(hjust = 0),\n                plot.title = element_text(face = \"bold\"),\n                legend.title = element_text(face = \"bold\")) +\n  labs(title = \"Most Common Type of Nursing Home Ownership\",\n       fill = \"Type of Control\",\n       caption = \"Data: Skilled Nursing Facility Cost Report (Data.CMS.gov)\") +\n    scale_fill_manual(values = c(\"#77AB43\", \"#008FD5\", \"#FF2700\"))\n\n\n\n\n\n\n\n\nAlt-Text: This choropleth plot displays the 48 contiguous US states colored by the most common type of ownership for nursing homes in the state. The three types of ownership are Nonprofit, Proprietary and Governmental. All of the states are dominated by Proprietary nursing homes except for four: North Dakota, South Dakota and Minnesota have more Nonprofit nursing homes than other types and Indiana has more Governmental nursing homes. The data were obtained from the Skilled Nursing Facility Cost Report."
+    "text": "Plot 2 (categorical variable)\nNote: I created both my categorical variables from numerical variables in the data set because there weren’t any appropriate existing variables.\n\n\n\n\n\n\n\n\n\nAlt-Text: This choropleth plot displays the 48 contiguous US states colored by the most common type of ownership for nursing homes in the state. The three types of ownership are Nonprofit, Proprietary and Governmental. All of the states are dominated by Proprietary nursing homes except for four: North Dakota, South Dakota and Minnesota have more Nonprofit nursing homes than other types and Indiana has more Governmental nursing homes. The data were obtained from the Skilled Nursing Facility Cost Report."
   },
   {
     "objectID": "projects/US_nursing_homes/index.html#plot-1-numeric",
     "href": "projects/US_nursing_homes/index.html#plot-1-numeric",
     "title": "United States Nursing Home Data",
     "section": "Plot 1 (numeric)",
-    "text": "Plot 1 (numeric)\n\nnursing_summary &lt;- nursing_summary |&gt;\n  mutate(num_labs_1 = str_c(name, \": \", snf_mean_stay_round, \" days\"))\npal &lt;- colorNumeric(\"Blues\", nursing_summary$snf_mean_stay_round)\n\n\nleaflet(nursing_summary) |&gt;\n  addTiles() |&gt; \n  setView(lng = -96.25,\n          lat = 40,\n          zoom = 3.5) |&gt;\n  addPolygons(weight = 2,\n              opacity = 1,\n              color = \"black\",\n              fillColor = ~ pal(nursing_summary$snf_mean_stay_round),\n              fillOpacity = 0.7,\n              label = ~ num_labs_1,\n              highlightOptions = highlightOptions(weight = 4,\n                                                  color = \"#668\",\n                                                  fillOpacity = 0.8,\n                                                  bringToFront = TRUE),\n              labelOptions = labelOptions(style = list(\"font-weight\" = \"normal\",\n                                                       padding = \"3px 8px\"),\n                                          textsize = \"15px\",\n                                          direction = \"auto\")) |&gt;\n  addLegend(pal = pal,\n            values = ~ nursing_summary$snf_mean_stay_round,\n            title = paste(\"Average SNF&lt;br&gt;Stay Length\"),\n            position = \"bottomright\")"
+    "text": "Plot 1 (numeric)"
   },
   {
     "objectID": "projects/US_nursing_homes/index.html#plot-2-categorical",
     "href": "projects/US_nursing_homes/index.html#plot-2-categorical",
     "title": "United States Nursing Home Data",
     "section": "Plot 2 (categorical)",
-    "text": "Plot 2 (categorical)\nNote: there are no observations in the $20 million - $25 million category so I did not provide a color for that level.\n\nnursing_summary &lt;- nursing_summary |&gt;\nmutate(cat_labs_1 = paste0(\"Total Gross Revenue: \", tot_gross_revenue, \"&lt;br&gt;\",\n                         \"Number of Nursing Homes: \", homes_per_state, \"&lt;br&gt;\",\n                         \"Average Gross Revenue Per Home: \", tot_revenue_homes_round))\n        \nlabels &lt;- lapply(nursing_summary$cat_labs_1, HTML)\n\nlevels(nursing_summary$revenue_cat)\n\n[1] \"Less than $10 million\"     \"$10 million - $15 million\"\n[3] \"$15 million - $20 million\" \"Greater than $25 million\" \n\nfactpal &lt;- colorFactor(c(\"#8FDA04FF\",\n                         \"#009F3FFF\",\n                         \"#132157FF\",\n                         \"#FFF800FF\"),\n                       levels(nursing_summary$revenue_cat))\n\n\nleaflet(nursing_summary) |&gt;\n  setView(lng = -96.25,\n          lat = 40,\n          zoom = 3.5) |&gt;\n  addTiles() |&gt; \n  addPolygons(weight = 2,\n              opacity = 1,\n              color = \"black\",\n              fillColor = ~ factpal(nursing_summary$revenue_cat),\n              dashArray = \"1\",\n              fillOpacity = 0.7,\n  highlightOptions = highlightOptions(weight = 5,\n                                      color = \"#666\",\n                                      fillOpacity = 0.7,\n                                      bringToFront = TRUE),\n  label = labels,\n  labelOptions = labelOptions(style = list(\"font-weight\" = \"normal\",\n                                           padding = \"3px 8px\"),\n                              textsize = \"15px\",\n                              direction = \"auto\")) |&gt;\n  addLegend(pal = factpal,\n            values = ~ nursing_summary$revenue_cat, \n            opacity = 0.7,\n            title = \"Gross Revenue\",\n            position = \"bottomright\")\n\n\n\n\n\nTWIN FOUNTAINS HOME of GA had a gross revenue of $1,300,406,865 and was removed for this analysis."
+    "text": "Plot 2 (categorical)\nNote: there are no observations in the $20 million - $25 million category so I did not provide a color for that level.\n\n\n[1] \"Less than $10 million\"     \"$10 million - $15 million\"\n[3] \"$15 million - $20 million\" \"Greater than $25 million\" \n\n\n\n\n\n\nTWIN FOUNTAINS HOME of GA had a gross revenue of $1,300,406,865 and was removed for this analysis."
   },
   {
     "objectID": "projects/US_nursing_homes/index.html",
@@ -117,5 +117,12 @@
     "title": "Elise Hachfeld",
     "section": "",
     "text": "version https://git-lfs.github.com/spec/v1 oid sha256:6c8890b2d2a6bf02c1e2a608e5cf4518e3a3d56569762a6ed4987bf959dd9f23 size 14703"
+  },
+  {
+    "objectID": "projects/Gutenberg Data/index.html",
+    "href": "projects/Gutenberg Data/index.html",
+    "title": "Gutenberg Data",
+    "section": "",
+    "text": "[1] \"Books with warnings:\"\n\n\n[[1]]\n[1] 11\n\n[[2]]\n[1] 46\n\n[[3]]\n[1] 100\n\n[[4]]\n[1] 120\n\n[[5]]\n[1] 145\n\n[[6]]\n[1] 174\n\n[[7]]\n[1] 345\n\n[[8]]\n[1] 730\n\n[[9]]\n[1] 1342\n\n[[10]]\n[1] 1513\n\n[[11]]\n[1] 2148\n\n[[12]]\n[1] 2199\n\n[[13]]\n[1] 2489\n\n[[14]]\n[1] 2641\n\n[[15]]\n[1] 19508\n\n[[16]]\n[1] 19640\n\n[[17]]\n[1] 41445\n\n[[18]]\n[1] 43936\n\n[[19]]\n[1] 64317\n\n[[20]]\n[1] 67098\n\n[[21]]\n[1] 67979\n\n\n# A tibble: 6 × 5\n  gutenberg_id text                                        title author line_num\n         &lt;int&gt; &lt;chr&gt;                                       &lt;chr&gt; &lt;chr&gt;     &lt;int&gt;\n1           33 The Scarlet Letter                          The … Hawth…        1\n2           41 The Legend of Sleepy Hollow                 The … Irvin…        1\n3           42 [Illustration]                              The … Steve…        1\n4           45 ANNE OF GREEN GABLES                        Anne… Montg…        1\n5          150 ******************************************… The … Plato         1\n6          244 A STUDY IN SCARLET                          A St… Doyle…        1"
   }
 ]

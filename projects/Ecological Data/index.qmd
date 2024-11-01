@@ -1,0 +1,13 @@
+---
+title: "Ecological Data"
+description: |
+  ???
+categories: ["ggplot", "BIO 261: Ecological Principles"]
+#image: bren-hex-white-bg.png
+draft: false
+---
+
+```{r setup, include = FALSE} 
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE) 
+
+```

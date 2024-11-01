@@ -1,0 +1,13 @@
+---
+title: "United States Nursing Home Data"
+description: |
+  Exploratory Data Analysis of US Nursing Home Data from the Skilled Nursing Facility Cost Report (Data.CMS.gov)
+categories: ["ggplot", "SDS 264: Data Science 2"]
+#image: bren-hex-white-bg.png
+draft: false
+---
+
+```{r setup, include = FALSE} 
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE) 
+
+```
