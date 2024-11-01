@@ -1,17 +1,3 @@
----
-title: "projects"
-listing:
-  contents: projects
-  feed: true
-  sort: "date desc"
-  type: grid
-  grid-item-border: true
-  grid-item-align: left
-  max-description-length: 175
-  date-format: medium
-  #categories: numbered
-  sort-ui: false
-  filter-ui: false
-page-layout: full
-title-block-banner: true
----
+version https://git-lfs.github.com/spec/v1
+oid sha256:2c2135ad1120cac9f9d6de84591de6b686dd4a6c3a0b2bdc4f1650a2ae4be3f8
+size 305
