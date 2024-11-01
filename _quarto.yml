@@ -1,13 +1,20 @@
 project:
   type: website
+  output-dir: docs
 
 website:
-  title: "elisefeld.github.io"
+  title: "Elise Hachfeld"
+  site-url: https://elisefeld.github.io/
   navbar:
     left:
       - href: index.qmd
-        text: Home
+        text: home
       - about.qmd
+      - href: projects.qmd
+      - text: projects
+  page-footer: 
+    background: light
+    left: © 2024 Elise Hachfeld
 
 format:
   html:
