@@ -1,3 +1,8 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:821ecdfc604995c9b713b68002a85711139159c9091cf76308b9870ddb371cb2
-size 111
+[
+  {
+    "listing": "/projects.html",
+    "items": [
+      "/projects/US_nursing_homes/index.html"
+    ]
+  }
+]

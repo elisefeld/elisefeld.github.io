@@ -1,3 +1,26 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:c1eb31687f8e22b9e1d6d05576a91e7d39a376338858d9bc6ead85a4ca6eaa9f
-size 411
+project:
+  type: website
+  output-dir: docs
+
+website:
+  title: "Elise Hachfeld"
+  site-url: https://elisefeld.github.io/
+  navbar:
+    left:
+      - href: index.qmd
+        text: home
+      - href: about.qmd
+        text: about
+      - href: projects.qmd
+  page-footer: 
+    background: light
+    left: © 2024 Elise Hachfeld
+
+format:
+  html:
+    theme: cosmo
+    css: styles.css
+    toc: true
+
+editor: visual
+
