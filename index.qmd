@@ -1,11 +1,32 @@
 ---
-title: "elisefeld.github.io"
+title: "Elise Hachfeld"
+image: images/elise_headshot.jpeg
+image-width: 10em
+image-shape: round
+about: 
+  template: solana
+  links:
+    - icon: envelope
+      href: mailto:hachfe3@stolaf.edu
+    - icon: github
+      href: https://github.com/elisefeld
+    - icon: linkedin
+      href: https://www.linkedin.com/in/elise-hachfeld-b4a068191/
 ---
 
-This is a Quarto website.
-
-To learn more about Quarto websites visit <https://quarto.org/docs/websites>.
+Hello! My name is Elise Hachfeld and I am a junior at St. Olaf College. 
 
 ```{r}
 1 + 1
 ```
+
+## Education
+St. Olaf College | Northfield, MN
+BA | Sep 2022 - May 2026
+
+
+
+## Experience
+
+
+## Relevant Coursework
