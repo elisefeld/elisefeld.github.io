@@ -2,7 +2,9 @@
   {
     "listing": "/projects.html",
     "items": [
-      "/projects/US_nursing_homes/index.html"
+      "/projects/US_nursing_homes/interactive_plots.html",
+      "/projects/US_nursing_homes/index.html",
+      "/projects/US_nursing_homes/static_plots.html"
     ]
   }
 ]

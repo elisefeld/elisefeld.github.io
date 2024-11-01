@@ -10,14 +10,14 @@ draft: false
 ## Data Import
 
 ```{r setup, include = FALSE} 
-knitr::opts_chunk$set(warning = FALSE, message = FALSE) 
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE) 
 
 library(tidyverse)
 library(janitor)
 library(mosaic)
 library(viridis)
-library(sf)
 library(leaflet)
+library(sf)
 library(maps)
 library(htmltools)
 library(envalysis)
@@ -52,12 +52,10 @@ pop_data <- read_csv("https://raw.githubusercontent.com/elisefeld/elise_data_dum
 # Join Data
 
 ```{r}
-#Found this mode function (did not write)
 Mode <- function(x) {
   ux <- unique(x)
   ux[which.max(tabulate(match(x, ux)))]
 }
-
 
 states_geo <- states_sf |> #creates data set with state names, abbreviations and geometry
   right_join(state_abbr_data,
@@ -66,7 +64,6 @@ states_geo <- states_sf |> #creates data set with state names, abbreviations and
 states_geo <- states_geo |> #adds latitude, longitude, group, order
   right_join(states_polygon,
              by = c("name" = "region"))
-
 
 nursing_summary <- nursing_data |>
   filter(state_code != "PR" &
@@ -324,3 +321,4 @@ leaflet(nursing_summary) |>
 ```
 
 *TWIN FOUNTAINS HOME of GA had a gross revenue of \$1,300,406,865 and was removed for this analysis.*
+
