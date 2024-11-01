@@ -9,9 +9,9 @@ website:
     left:
       - href: index.qmd
         text: home
-      - about.qmd
+      - href: about.qmd
+        text: about
       - href: projects.qmd
-      - text: projects
   page-footer: 
     background: light
     left: © 2024 Elise Hachfeld
