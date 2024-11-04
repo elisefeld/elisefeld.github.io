@@ -1,13 +1,419 @@
 ---
-title: "Ecological Data"
+title: "EREN Research Project Analysis"
 description: |
-  ???
+  Statistical Analysis and Visualization for EREN Plot Data
 categories: ["ggplot", "BIO 261: Ecological Principles"]
 #image: bren-hex-white-bg.png
 draft: false
 ---
+This analysis comapres EREN plot data collected by BIO 261's lab groups in 2024 to historical data from 2015, focusing on the growth and health of tree species within various ecological plots. The dataset includes measurements from 2015 and 2024, allowing us to examine changes over nearly a decade. The analysis includes data cleaning, data transformations, statistical tests, and visualizations to explore relationships between tree characteristics and plot conditions.
 
-```{r setup, include = FALSE} 
-knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE) 
+# Data Preparation and Cleaning
+We start by importing and cleaning the datasets from 2015 and 2024 by removing spaces, handling null values, and standardizing data formats.
 
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE) 
+library(janitor)
+library(tidyverse)
+library(envalysis)
+library(mosaic)
+library(viridis)
+library(ggResidpanel)
+library(ggpubr)
+library(performance)
+
+# Function that takes mode (most frequent value)
+Mode <- function(x) {
+  ux <- unique(x)
+  ux[which.max(tabulate(match(x, ux)))]
+  } 
+
+```
+
+# Cleaning 2015 Data
+```{r}
+dat_2015 <- read.csv("https://raw.githubusercontent.com/elisefeld/elise_data_dump/main/Combined_2015_data.csv") |>
+  clean_names() |>
+  mutate(across(everything(),
+                str_remove_all,
+                pattern = fixed(" "))) |> #remove spaces in data
+  mutate(across(where(is.character),
+                ~na_if(., "null"))) |> #add null vals for chrs
+  mutate(across(c(tree_number,
+                  subplot),
+                as.character)) |> #convert to chr datatype
+  mutate(across(c(plot_year,
+                  plot_month,
+                  height,
+                  dbh),
+                as.numeric)) |> #convert to numeric datatype
+  rename(dbh_2015 = dbh,
+          note_2015 = note,
+          plot_month_2015 = plot_month) 
+```
+
+# Cleaning 2024 Data
+```{r}
+dat_2024 <- read.csv("https://raw.githubusercontent.com/elisefeld/elise_data_dump/main/Combined_2024_data.csv") |>
+  clean_names () |>
+  select(-group) |>
+  mutate(across(everything(),
+                str_remove_all,
+                pattern = fixed(" "))) |> #remove spaces in data
+  mutate(across(where(is.character),
+                ~if_else(. %in% c("",
+                                  "unidentified",
+                                  "Dead/Missing",
+                                  "null",
+                                  "na",
+                                  "NA",
+                                  "Na"),
+                          NA_character_, .))) |> #add null vals for chrs
+  mutate(plot_month = str_replace(plot_month, "September", "9"),
+         plot_name = str_replace_all(plot_name, c("_" = "",
+                                                  "Plot4" = "southsouth",
+                                                  "4" = "southsouth", 
+                                                  "northeast" = "northnorth",
+                                                  "notheast" = "northnorth")),
+         plot_name = str_to_lower(plot_name)) |> #standardizes plot_name & plot_month cols
+   mutate(across(c(height,
+                   dbh),
+                 na_if, "0")) |> #add null vals for nums
+   mutate(dbh = na_if(dbh, "61.5")) |> #REMOVING OUTLIER DBH
+   mutate(across(c(height,
+                   dbh,
+                   plot_year,
+                   plot_month),
+                 as.numeric)) |> #convert to numeric datatype
+   mutate(across(c(height,
+                   dbh),
+                 round, 2)) |> #round values to 2 decimal places
+   rename(dbh_2024 = dbh,
+          note_2024 = note,
+          height_2024 = height,
+          plot_month_2024 = plot_month) 
+```
+
+# Preparation and Joining
+The cleaned datasets are further processed to combine duplicated measurements for each tree, calculate growth rates, and identify dead trees. This allows for easy comparison of changes between 2015 and 2024.
+
+```{r}
+#averaging trees that were measured more than once in each data set
+dat_2015_new <- dat_2015 |>
+    group_by(plot_name,
+             tree_number) |>
+    mutate(plot_month_2015 = Mode(plot_month_2015),
+           dbh_2015 = mean(dbh_2015,
+                           na.rm = TRUE)) |> #taking the mean dbh of all trees with the same plot name and tree number
+  distinct(tree_number,
+           .keep_all = TRUE) |>
+  select(-plot_year,
+         -plot_month_2015)
+
+
+dat_2024_new <- dat_2024 |>
+  group_by(plot_name,
+           tree_number) |>
+  mutate(plot_month_2024 = Mode(plot_month_2024),
+         dbh_2024 = mean(dbh_2024,
+                         na.rm = TRUE),
+         height_2024 = mean(height_2024,
+                            na.rm = TRUE)) |> #taking the mean dbh and height of all trees with the same plot name and tree number
+  distinct(tree_number,
+           .keep_all = TRUE) |>
+  mutate(across(where(is.numeric),
+                ~na_if(., NaN))) |> #changing not a number to NA
+  select(-plot_year,
+         -plot_month_2024)
+```
+
+# Joining & Creating New Variables
+```{r}
+dat_all <- dat_2024_new |>
+    left_join(dat_2015_new,
+              by = c("plot_name",
+                     "subplot",
+                     "tree_number")) |> 
+    select(plot_name,
+           subplot,
+           tree_number,
+           species_code.y,
+           dbh_2015,
+           dbh_2024,
+           height_2024,
+           note_2015,
+           note_2024,
+           inv_status,
+           stemtype,
+           soundness,
+           crownclass,
+           treedamage) |>
+  rename(species_code = species_code.y) |>
+  mutate(treedamage = str_to_upper(treedamage),
+         growth_factor = (dbh_2024 - dbh_2015) / 9, #create growth factor col, 2024-2015/9yrs
+         dead_2015 = note_2015, #copy col
+         dead_2024 = note_2024) |> #copy col
+  mutate(dead_2015 = case_when(str_detect(dead_2015, "lvsgone") ~ "DEADNOLEAVES",
+                               str_detect(dead_2015, "noleavesleft")  ~ "DEADNOLEAVES",
+                               str_detect(dead_2015, "leavesgone")  ~ "DEADNOLEAVES",
+                               str_detect(dead_2015, "fewleaves")  ~ "DEADNOLEAVES",
+                               str_detect(dead_2015, "leavesallgone")  ~ "DEADNOLEAVES",
+                               str_detect(dead_2015, "mostleavesgone")  ~ "DEADNOLEAVES",
+                               str_detect(dead_2015, "dead") ~ "DEAD",
+                               TRUE ~ dead_2015)) |> #if contains left, convert to right
+  mutate(dead_2015 = replace(dead_2015,
+                             !grepl("DEAD", dead_2015),
+                             "NODATA")) |>
+  mutate(dead_2024 = case_when(str_detect(dead_2024, "noleaves") ~ "DEADNOLEAVES",
+                               str_detect(dead_2024, "dead") ~ "DEAD",
+                               str_detect(dead_2024, "missing") ~ "DEAD",
+                               str_detect(dead_2024, "Gone") ~ "DEAD",
+                               str_detect(dead_2024, "Dead") ~ "DEAD",
+                               str_detect(dead_2024, "deceased") ~ "DEAD",
+                               TRUE ~ dead_2024)) |> #if !contain DEAD, convert to NODATA
+   mutate(dead_2024 = replace(dead_2024,
+                              !grepl("DEAD", dead_2024),
+                              "NODATA")) |> #if !contain DEAD, convert to NODATA
+   mutate(species_name = as.factor(species_code),
+          species_genus = as.factor(species_code)) |>
+   mutate(species_name = fct_recode(species_name,
+                                    "Amur Maple" = "ACEGIN",
+                                    "Boxelder" = "ACENEG",
+                                    "Red Maple" = "ACERUB",
+                                    "Sugar Maple" = "ACESAC",
+                                    "Bitternut Hickory" = "CARCOR",
+                                    "American Ash" = "FRAAME",
+                                    "Black Walnut" = "JUGNIG",
+                                    "Eastern Hophornbeam" = "OSTVIR",
+                                    "Bigtooth Aspen" = "POPGRA",
+                                    "Black Cherry" = "PRUSER",
+                                    "Chokecherry" = "PRUVIR",
+                                    "White Oak" = "QUEALB",
+                                    "Bur Oak" = "QUEMAC",
+                                    "Red Oak" = "QUERUB",
+                                    "Common Buckthorn" = "RHACAT",
+                                    "American Basswood" = "TILAME",
+                                    "American Elm" = "ULMAME")) |> #create new col species_name
+   mutate(species_genus = fct_collapse(species_genus,
+                                       Acer = c("ACEGIN", "ACENEG", "ACERUB", "ACESAC"),
+                                       Caryus = c("CARCOR"),
+                                       Fraxinus = c("FRAAME"),
+                                       Juglans = c("JUGNIG"),
+                                       Ostrya = c("OSTVIR"),
+                                       Populus = c("POPGRA"),
+                                       Prunus = c("PRUSER", "PRUVIR"),
+                                       Quercus = c("QUEALB", "QUEMAC", "QUERUB"),
+                                       Rhamnus = c("RHACAT"),
+                                       Tilia = c("TILAME"),
+                                       Ulmus = c("ULMAME"))) |> #create new col species_genus
+    mutate(plot_name_num = case_when(str_detect(plot_name, "northnorth") ~ 2,
+                                  str_detect(plot_name, "northsouth") ~ 1,
+                                  str_detect(plot_name, "southnorth") ~ 3,
+                                  str_detect(plot_name, "southsouth") ~ 4,)) |> #plot name chr to numeric
+    mutate(hl_density = case_when(str_detect(plot_name, "northnorth") ~ "Low Density",
+                                  str_detect(plot_name, "northsouth") ~ "Low Density",
+                                  str_detect(plot_name, "southnorth") ~ "High Density",
+                                  str_detect(plot_name, "southsouth") ~ "High Density")) |> #new col plots high or low density
+    mutate(species_name = as.factor(species_name))
+
+```
+
+# Pivoting for Visualization
+```{r}
+dat_all_pivot <- dat_all |>
+  pivot_longer(cols = starts_with("dbh_"),
+               names_to = "year",
+               values_to = "dbh",
+               names_prefix = "dbh_")
+```
+
+```{r}
+#How many of each species are in each plot?
+tbl1 <- table(dat_all$species_name, dat_all$plot_name)
+tbl1
+prop1 <- prop.table(tbl1, margin = 1)
+prop1
+
+dat_all |>
+  tabyl(species_name, plot_name) |>
+  adorn_totals(c("row", "col")) |>
+  adorn_percentages(denominator = "col") |>
+  adorn_pct_formatting() |>
+  adorn_ns() |>
+  knitr::kable()
+
+
+#How many of each species are dead in 2024?
+dat_all |>
+  tabyl(species_name, dead_2024) |>
+  adorn_totals(c("row", "col")) |>
+  adorn_percentages(denominator = "col") |>
+  adorn_pct_formatting() |>
+  adorn_ns() |>
+  knitr::kable()
+```
+
+# American Ash DBH by Plot in 2015 and 2024
+```{r}
+dat_all_pivot |>
+filter(species_code == "FRAAME") |>
+ggplot(aes(plot_name, dbh, fill = year)) +
+  geom_boxplot() +
+    stat_boxplot(geom = "errorbar") +
+    stat_summary(fun.y = "mean", geom = "point", size = 2,
+                 position = position_dodge(width = 0.75), color = "white") +
+  theme_publish() +
+  scale_fill_manual(values = c("#38AAAB", "#DEF5E5"))+
+  theme(aspect.ratio = 0.5,
+        panel.grid.major = element_line(colour = "black",
+                                        linewidth = 0.05)) +
+  labs(title = "American Ash Tree DBH by Plot in 2015 and 2024",
+       x = "Plot Name",
+       y = "DBH (cm)",
+       fill = "Year")
+
+
+#Statistical Analysis
+
+#T-Test
+dat_all_ash <- dat_all |>
+  filter(species_name == "American Ash")
+
+t.test(dbh_2024 ~ hl_density, data = dat_all_ash)
+
+t.test(dbh_2015 ~ hl_density, data = dat_all_ash)
+
+#DBH vs plot location ANOVA
+model_2015_ash <- aov(dbh_2015 ~ plot_name, data = dat_all_ash)
+summary(model_2015_ash)
+model_2015_ash$coefficients
+
+tukey15 <- TukeyHSD(model_2015_ash)
+print(tukey15)
+plot(tukey15, las = 0 , col = "brown", cex.axis=0.40)
+
+model_2024_ash <- aov(dbh_2024 ~ plot_name, data = dat_all_ash)
+summary(model_2024_ash)
+model_2024_ash$coefficients
+
+tukey24 <- TukeyHSD(model_2024_ash)
+print(tukey24)
+plot(tukey24, las = 0 , col = "brown", cex.axis=0.40)
+```
+
+# Growth Factor by Plot
+```{r}
+dat_all |>
+  ggplot(aes(hl_density, growth_factor, fill = hl_density)) +
+  geom_boxplot() +
+  stat_boxplot(geom = "errorbar", 
+               width = 0.25) +
+  geom_boxplot() +
+  theme_publish() +
+  scale_fill_manual(values = c("#38AAAB", "#DEF5E5"))+
+  theme(panel.grid.major = element_line(colour = "black",
+                                        linewidth = 0.05)) +
+  labs(title = "Growth Factor by Ash Tree Density",
+       x = "Ash Tree Density",
+       y = "Growth Factor (cm/yr)",
+       fill = "Tree Density")
+
+dat_all |>
+ggplot(aes(plot_name, growth_factor, fill = plot_name)) +
+  stat_boxplot(geom = "errorbar", 
+               width = 0.25) +
+  geom_boxplot() +
+  theme_publish() +
+  scale_fill_viridis_d(option = "mako") +
+  theme(panel.grid.major = element_line(colour = "black",
+                                        linewidth = 0.05)) +
+  labs(title = "Growth Factor by Plot",
+       x = "Plot Name",
+       y = "Growth Factor (cm/yr)",
+       fill = "Plot Name")
+
+#Statistical Analysis
+#T-test
+t.test(growth_factor ~ hl_density, data = dat_all)
+ggqqplot(dat_all, x = "growth_factor", facet.by = "hl_density")
+#dat_all <- dat_all |>
+#  mutate(log_growth = log(growth_factor + 2))
+
+#ggqqplot(dat_all, x = "log_growth", facet.by = "hl_density")
+#t.test(log_growth ~ hl_density, data = dat_all)
+#commented out log transform doesn't help
+
+#The true difference in mean growth factor between the high density and low density plots is not equal to zero. We are 95% confident that the true difference in mean growth factor between the high and low density plots is between 0.071 and 0.377 cm/yr. p-value = 0.004385.
+
+```
+
+# Growth Factor by Genus
+```{r}
+#Rhamnus not shown because there was only 1 indivdiual in 2015 which died by 2024. 
+dat_all |>
+filter(is.na(species_code) == FALSE & species_genus != "Rhamnus") |>
+ggplot(aes(reorder(species_genus, growth_factor, mean), growth_factor, fill = (reorder(species_genus, growth_factor, mean)))) +
+  stat_boxplot(geom = "errorbar", 
+               width = 0.25) +
+  geom_boxplot() +
+  theme_publish() +
+  scale_fill_viridis_d(option = "mako") +
+  theme(panel.grid.major = element_line(colour = "black",
+                                        linewidth = 0.05)) +
+  labs(title = "Growth Factor by Genus",
+       x = "Genus",
+       y = "Growth Factor (cm/yr)",
+       fill = "Genus")
+```
+
+# Species and Growth Factor in High and Low Density Plots
+```{r}
+#High Density Only
+dat_all |>
+  group_by(species_name) |>
+  summarise(count = n()) |>
+  filter(count > 10)
+#There are at least 10 trees of American Ash, Bur Oak, White Oak, Sugar Maple, Black Walnut, Boxelder, Red Maple. 
+
+# There are more species (16) in the low density plot vs the high density plot (8)
+dat_all |>
+  group_by(hl_density) |>
+  summarize(unique_species_n = n_distinct(species_name))
+
+dat_all |>
+filter(is.na(species_code) == FALSE & hl_density == "High Density") |>
+filter(species_name %in% c("American Ash", "Bur Oak", "White Oak", "Sugar Maple", "Black Walnut", "Boxelder", "Red Maple")) |>
+ggplot(aes(reorder(species_name, growth_factor, mean), growth_factor, fill = (reorder(species_name, growth_factor, mean)))) +
+  stat_boxplot(geom = "errorbar", 
+               width = 0.25) +
+  geom_boxplot() +
+  theme_publish() +
+  scale_fill_viridis_d(option = "mako") +
+  theme(panel.grid.major = element_line(colour = "black",
+                                        linewidth = 0.05)) +
+  labs(title = "Growth Factor by Species in High Ash Density Plots",
+       x = "Species",
+       y = "Growth Factor (cm/yr)",
+       fill = "Species")
+
+
+#Low Density Only
+dat_all |>
+filter(is.na(species_code) == FALSE & hl_density == "Low Density") |>
+filter(species_name %in% c("American Ash", "Bur Oak", "White Oak", "Sugar Maple", "Black Walnut", "Boxelder", "Red Maple")) |>
+ggplot(aes(reorder(species_name, growth_factor, mean), growth_factor, fill = (reorder(species_name, growth_factor, mean)))) +
+  stat_boxplot(geom = "errorbar", 
+               width = 0.25) +
+  geom_boxplot() +
+  theme_publish() +
+  scale_fill_viridis_d(option = "mako") +
+  theme(panel.grid.major = element_line(colour = "black",
+                                        linewidth = 0.05)) +
+  labs(title = "Growth Factor by Species in Low Ash Density Plots",
+       x = "Species",
+       y = "Growth Factor (cm/yr)",
+       fill = "Species")
+
+#There aren't any Bur Oak or White Oak in the High Density plots. 
 ```

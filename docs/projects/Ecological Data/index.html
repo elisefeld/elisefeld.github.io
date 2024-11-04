@@ -6,9 +6,9 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="description" content="???">
+<meta name="description" content="Statistical Analysis and Visualization for EREN Plot Data">
 
-<title>Ecological Data – Elise Hachfeld</title>
+<title>EREN Research Project Analysis – Elise Hachfeld</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -20,6 +20,40 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -112,15 +146,32 @@ ul.task-list li input[type="checkbox"] {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#data-preparation-and-cleaning" id="toc-data-preparation-and-cleaning" class="nav-link active" data-scroll-target="#data-preparation-and-cleaning">Data Preparation and Cleaning</a></li>
+  <li><a href="#cleaning-2015-data" id="toc-cleaning-2015-data" class="nav-link" data-scroll-target="#cleaning-2015-data">Cleaning 2015 Data</a></li>
+  <li><a href="#cleaning-2024-data" id="toc-cleaning-2024-data" class="nav-link" data-scroll-target="#cleaning-2024-data">Cleaning 2024 Data</a></li>
+  <li><a href="#preparation-and-joining" id="toc-preparation-and-joining" class="nav-link" data-scroll-target="#preparation-and-joining">Preparation and Joining</a></li>
+  <li><a href="#joining-creating-new-variables" id="toc-joining-creating-new-variables" class="nav-link" data-scroll-target="#joining-creating-new-variables">Joining &amp; Creating New Variables</a></li>
+  <li><a href="#pivoting-for-visualization" id="toc-pivoting-for-visualization" class="nav-link" data-scroll-target="#pivoting-for-visualization">Pivoting for Visualization</a></li>
+  <li><a href="#american-ash-dbh-by-plot-in-2015-and-2024" id="toc-american-ash-dbh-by-plot-in-2015-and-2024" class="nav-link" data-scroll-target="#american-ash-dbh-by-plot-in-2015-and-2024">American Ash DBH by Plot in 2015 and 2024</a></li>
+  <li><a href="#growth-factor-by-plot" id="toc-growth-factor-by-plot" class="nav-link" data-scroll-target="#growth-factor-by-plot">Growth Factor by Plot</a></li>
+  <li><a href="#growth-factor-by-genus" id="toc-growth-factor-by-genus" class="nav-link" data-scroll-target="#growth-factor-by-genus">Growth Factor by Genus</a></li>
+  <li><a href="#species-and-growth-factor-in-high-and-low-density-plots" id="toc-species-and-growth-factor-in-high-and-low-density-plots" class="nav-link" data-scroll-target="#species-and-growth-factor-in-high-and-low-density-plots">Species and Growth Factor in High and Low Density Plots</a></li>
+  <li><a href="#unused-t-tests" id="toc-unused-t-tests" class="nav-link" data-scroll-target="#unused-t-tests">Unused T-tests:</a></li>
+  <li><a href="#linear-regression" id="toc-linear-regression" class="nav-link" data-scroll-target="#linear-regression">Linear Regression:</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Ecological Data</h1>
+<h1 class="title">EREN Research Project Analysis</h1>
   <div class="quarto-categories">
     <div class="quarto-category">ggplot</div>
     <div class="quarto-category">BIO 261: Ecological Principles</div>
@@ -129,7 +180,7 @@ ul.task-list li input[type="checkbox"] {
 
 <div>
   <div class="description">
-    <p>???</p>
+    <p>Statistical Analysis and Visualization for EREN Plot Data</p>
   </div>
 </div>
 
@@ -146,8 +197,1077 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
+<p>This analysis comapres EREN plot data collected by BIO 261’s lab groups in 2024 to historical data from 2015, focusing on the growth and health of tree species within various ecological plots. The dataset includes measurements from 2015 and 2024, allowing us to examine changes over nearly a decade. The analysis includes data cleaning, data transformations, statistical tests, and visualizations to explore relationships between tree characteristics and plot conditions.</p>
+<section id="data-preparation-and-cleaning" class="level1">
+<h1>Data Preparation and Cleaning</h1>
+<p>We start by importing and cleaning the datasets from 2015 and 2024 by removing spaces, handling null values, and standardizing data formats.</p>
+</section>
+<section id="cleaning-2015-data" class="level1">
+<h1>Cleaning 2015 Data</h1>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>dat_2015 <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"https://raw.githubusercontent.com/elisefeld/elise_data_dump/main/Combined_2015_data.csv"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">clean_names</span>() <span class="sc">|&gt;</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">everything</span>(),</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>                str_remove_all,</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>                <span class="at">pattern =</span> <span class="fu">fixed</span>(<span class="st">" "</span>))) <span class="sc">|&gt;</span> <span class="co">#remove spaces in data</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">where</span>(is.character),</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>                <span class="sc">~</span><span class="fu">na_if</span>(., <span class="st">"null"</span>))) <span class="sc">|&gt;</span> <span class="co">#add null vals for chrs</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">c</span>(tree_number,</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>                  subplot),</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>                as.character)) <span class="sc">|&gt;</span> <span class="co">#convert to chr datatype</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">c</span>(plot_year,</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>                  plot_month,</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>                  height,</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>                  dbh),</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>                as.numeric)) <span class="sc">|&gt;</span> <span class="co">#convert to numeric datatype</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">dbh_2015 =</span> dbh,</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>          <span class="at">note_2015 =</span> note,</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>          <span class="at">plot_month_2015 =</span> plot_month) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="cleaning-2024-data" class="level1">
+<h1>Cleaning 2024 Data</h1>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>dat_2024 <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"https://raw.githubusercontent.com/elisefeld/elise_data_dump/main/Combined_2024_data.csv"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">clean_names</span> () <span class="sc">|&gt;</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>group) <span class="sc">|&gt;</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">everything</span>(),</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>                str_remove_all,</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>                <span class="at">pattern =</span> <span class="fu">fixed</span>(<span class="st">" "</span>))) <span class="sc">|&gt;</span> <span class="co">#remove spaces in data</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">where</span>(is.character),</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>                <span class="sc">~</span><span class="fu">if_else</span>(. <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">""</span>,</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>                                  <span class="st">"unidentified"</span>,</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>                                  <span class="st">"Dead/Missing"</span>,</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>                                  <span class="st">"null"</span>,</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>                                  <span class="st">"na"</span>,</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>                                  <span class="st">"NA"</span>,</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>                                  <span class="st">"Na"</span>),</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>                          <span class="cn">NA_character_</span>, .))) <span class="sc">|&gt;</span> <span class="co">#add null vals for chrs</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">plot_month =</span> <span class="fu">str_replace</span>(plot_month, <span class="st">"September"</span>, <span class="st">"9"</span>),</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>         <span class="at">plot_name =</span> <span class="fu">str_replace_all</span>(plot_name, <span class="fu">c</span>(<span class="st">"_"</span> <span class="ot">=</span> <span class="st">""</span>,</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>                                                  <span class="st">"Plot4"</span> <span class="ot">=</span> <span class="st">"southsouth"</span>,</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>                                                  <span class="st">"4"</span> <span class="ot">=</span> <span class="st">"southsouth"</span>, </span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>                                                  <span class="st">"northeast"</span> <span class="ot">=</span> <span class="st">"northnorth"</span>,</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>                                                  <span class="st">"notheast"</span> <span class="ot">=</span> <span class="st">"northnorth"</span>)),</span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>         <span class="at">plot_name =</span> <span class="fu">str_to_lower</span>(plot_name)) <span class="sc">|&gt;</span> <span class="co">#standardizes plot_name &amp; plot_month cols</span></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>   <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">c</span>(height,</span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>                   dbh),</span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>                 na_if, <span class="st">"0"</span>)) <span class="sc">|&gt;</span> <span class="co">#add null vals for nums</span></span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>   <span class="fu">mutate</span>(<span class="at">dbh =</span> <span class="fu">na_if</span>(dbh, <span class="st">"61.5"</span>)) <span class="sc">|&gt;</span> <span class="co">#REMOVING OUTLIER DBH</span></span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>   <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">c</span>(height,</span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>                   dbh,</span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>                   plot_year,</span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>                   plot_month),</span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>                 as.numeric)) <span class="sc">|&gt;</span> <span class="co">#convert to numeric datatype</span></span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>   <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">c</span>(height,</span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>                   dbh),</span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a>                 round, <span class="dv">2</span>)) <span class="sc">|&gt;</span> <span class="co">#round values to 2 decimal places</span></span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a>   <span class="fu">rename</span>(<span class="at">dbh_2024 =</span> dbh,</span>
+<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a>          <span class="at">note_2024 =</span> note,</span>
+<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a>          <span class="at">height_2024 =</span> height,</span>
+<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a>          <span class="at">plot_month_2024 =</span> plot_month) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="preparation-and-joining" class="level1">
+<h1>Preparation and Joining</h1>
+<p>The cleaned datasets are further processed to combine duplicated measurements for each tree, calculate growth rates, and identify dead trees. This allows for easy comparison of changes between 2015 and 2024.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">#averaging trees that were measured more than once in each data set</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>dat_2015_new <span class="ot">&lt;-</span> dat_2015 <span class="sc">|&gt;</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(plot_name,</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>             tree_number) <span class="sc">|&gt;</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">plot_month_2015 =</span> <span class="fu">Mode</span>(plot_month_2015),</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>           <span class="at">dbh_2015 =</span> <span class="fu">mean</span>(dbh_2015,</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>                           <span class="at">na.rm =</span> <span class="cn">TRUE</span>)) <span class="sc">|&gt;</span> <span class="co">#taking the mean dbh of all trees with the same plot name and tree number</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">distinct</span>(tree_number,</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>           <span class="at">.keep_all =</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>plot_year,</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>         <span class="sc">-</span>plot_month_2015)</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>dat_2024_new <span class="ot">&lt;-</span> dat_2024 <span class="sc">|&gt;</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(plot_name,</span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>           tree_number) <span class="sc">|&gt;</span></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">plot_month_2024 =</span> <span class="fu">Mode</span>(plot_month_2024),</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>         <span class="at">dbh_2024 =</span> <span class="fu">mean</span>(dbh_2024,</span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>                         <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>         <span class="at">height_2024 =</span> <span class="fu">mean</span>(height_2024,</span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>                            <span class="at">na.rm =</span> <span class="cn">TRUE</span>)) <span class="sc">|&gt;</span> <span class="co">#taking the mean dbh and height of all trees with the same plot name and tree number</span></span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">distinct</span>(tree_number,</span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>           <span class="at">.keep_all =</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span></span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">where</span>(is.numeric),</span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>                <span class="sc">~</span><span class="fu">na_if</span>(., <span class="cn">NaN</span>))) <span class="sc">|&gt;</span> <span class="co">#changing not a number to NA</span></span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>plot_year,</span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>         <span class="sc">-</span>plot_month_2024)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="joining-creating-new-variables" class="level1">
+<h1>Joining &amp; Creating New Variables</h1>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>dat_all <span class="ot">&lt;-</span> dat_2024_new <span class="sc">|&gt;</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">left_join</span>(dat_2015_new,</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>              <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"plot_name"</span>,</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>                     <span class="st">"subplot"</span>,</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>                     <span class="st">"tree_number"</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(plot_name,</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>           subplot,</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>           tree_number,</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>           species_code.y,</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>           dbh_2015,</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>           dbh_2024,</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>           height_2024,</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>           note_2015,</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>           note_2024,</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>           inv_status,</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>           stemtype,</span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>           soundness,</span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>           crownclass,</span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>           treedamage) <span class="sc">|&gt;</span></span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">species_code =</span> species_code.y) <span class="sc">|&gt;</span></span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">treedamage =</span> <span class="fu">str_to_upper</span>(treedamage),</span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>         <span class="at">growth_factor =</span> (dbh_2024 <span class="sc">-</span> dbh_2015) <span class="sc">/</span> <span class="dv">9</span>, <span class="co">#create growth factor col, 2024-2015/9yrs</span></span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>         <span class="at">dead_2015 =</span> note_2015, <span class="co">#copy col</span></span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>         <span class="at">dead_2024 =</span> note_2024) <span class="sc">|&gt;</span> <span class="co">#copy col</span></span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">dead_2015 =</span> <span class="fu">case_when</span>(<span class="fu">str_detect</span>(dead_2015, <span class="st">"lvsgone"</span>) <span class="sc">~</span> <span class="st">"DEADNOLEAVES"</span>,</span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>                               <span class="fu">str_detect</span>(dead_2015, <span class="st">"noleavesleft"</span>)  <span class="sc">~</span> <span class="st">"DEADNOLEAVES"</span>,</span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>                               <span class="fu">str_detect</span>(dead_2015, <span class="st">"leavesgone"</span>)  <span class="sc">~</span> <span class="st">"DEADNOLEAVES"</span>,</span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>                               <span class="fu">str_detect</span>(dead_2015, <span class="st">"fewleaves"</span>)  <span class="sc">~</span> <span class="st">"DEADNOLEAVES"</span>,</span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a>                               <span class="fu">str_detect</span>(dead_2015, <span class="st">"leavesallgone"</span>)  <span class="sc">~</span> <span class="st">"DEADNOLEAVES"</span>,</span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a>                               <span class="fu">str_detect</span>(dead_2015, <span class="st">"mostleavesgone"</span>)  <span class="sc">~</span> <span class="st">"DEADNOLEAVES"</span>,</span>
+<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a>                               <span class="fu">str_detect</span>(dead_2015, <span class="st">"dead"</span>) <span class="sc">~</span> <span class="st">"DEAD"</span>,</span>
+<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a>                               <span class="cn">TRUE</span> <span class="sc">~</span> dead_2015)) <span class="sc">|&gt;</span> <span class="co">#if contains left, convert to right</span></span>
+<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">dead_2015 =</span> <span class="fu">replace</span>(dead_2015,</span>
+<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a>                             <span class="sc">!</span><span class="fu">grepl</span>(<span class="st">"DEAD"</span>, dead_2015),</span>
+<span id="cb4-35"><a href="#cb4-35" aria-hidden="true" tabindex="-1"></a>                             <span class="st">"NODATA"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb4-36"><a href="#cb4-36" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">dead_2024 =</span> <span class="fu">case_when</span>(<span class="fu">str_detect</span>(dead_2024, <span class="st">"noleaves"</span>) <span class="sc">~</span> <span class="st">"DEADNOLEAVES"</span>,</span>
+<span id="cb4-37"><a href="#cb4-37" aria-hidden="true" tabindex="-1"></a>                               <span class="fu">str_detect</span>(dead_2024, <span class="st">"dead"</span>) <span class="sc">~</span> <span class="st">"DEAD"</span>,</span>
+<span id="cb4-38"><a href="#cb4-38" aria-hidden="true" tabindex="-1"></a>                               <span class="fu">str_detect</span>(dead_2024, <span class="st">"missing"</span>) <span class="sc">~</span> <span class="st">"DEAD"</span>,</span>
+<span id="cb4-39"><a href="#cb4-39" aria-hidden="true" tabindex="-1"></a>                               <span class="fu">str_detect</span>(dead_2024, <span class="st">"Gone"</span>) <span class="sc">~</span> <span class="st">"DEAD"</span>,</span>
+<span id="cb4-40"><a href="#cb4-40" aria-hidden="true" tabindex="-1"></a>                               <span class="fu">str_detect</span>(dead_2024, <span class="st">"Dead"</span>) <span class="sc">~</span> <span class="st">"DEAD"</span>,</span>
+<span id="cb4-41"><a href="#cb4-41" aria-hidden="true" tabindex="-1"></a>                               <span class="fu">str_detect</span>(dead_2024, <span class="st">"deceased"</span>) <span class="sc">~</span> <span class="st">"DEAD"</span>,</span>
+<span id="cb4-42"><a href="#cb4-42" aria-hidden="true" tabindex="-1"></a>                               <span class="cn">TRUE</span> <span class="sc">~</span> dead_2024)) <span class="sc">|&gt;</span> <span class="co">#if !contain DEAD, convert to NODATA</span></span>
+<span id="cb4-43"><a href="#cb4-43" aria-hidden="true" tabindex="-1"></a>   <span class="fu">mutate</span>(<span class="at">dead_2024 =</span> <span class="fu">replace</span>(dead_2024,</span>
+<span id="cb4-44"><a href="#cb4-44" aria-hidden="true" tabindex="-1"></a>                              <span class="sc">!</span><span class="fu">grepl</span>(<span class="st">"DEAD"</span>, dead_2024),</span>
+<span id="cb4-45"><a href="#cb4-45" aria-hidden="true" tabindex="-1"></a>                              <span class="st">"NODATA"</span>)) <span class="sc">|&gt;</span> <span class="co">#if !contain DEAD, convert to NODATA</span></span>
+<span id="cb4-46"><a href="#cb4-46" aria-hidden="true" tabindex="-1"></a>   <span class="fu">mutate</span>(<span class="at">species_name =</span> <span class="fu">as.factor</span>(species_code),</span>
+<span id="cb4-47"><a href="#cb4-47" aria-hidden="true" tabindex="-1"></a>          <span class="at">species_genus =</span> <span class="fu">as.factor</span>(species_code)) <span class="sc">|&gt;</span></span>
+<span id="cb4-48"><a href="#cb4-48" aria-hidden="true" tabindex="-1"></a>   <span class="fu">mutate</span>(<span class="at">species_name =</span> <span class="fu">fct_recode</span>(species_name,</span>
+<span id="cb4-49"><a href="#cb4-49" aria-hidden="true" tabindex="-1"></a>                                    <span class="st">"Amur Maple"</span> <span class="ot">=</span> <span class="st">"ACEGIN"</span>,</span>
+<span id="cb4-50"><a href="#cb4-50" aria-hidden="true" tabindex="-1"></a>                                    <span class="st">"Boxelder"</span> <span class="ot">=</span> <span class="st">"ACENEG"</span>,</span>
+<span id="cb4-51"><a href="#cb4-51" aria-hidden="true" tabindex="-1"></a>                                    <span class="st">"Red Maple"</span> <span class="ot">=</span> <span class="st">"ACERUB"</span>,</span>
+<span id="cb4-52"><a href="#cb4-52" aria-hidden="true" tabindex="-1"></a>                                    <span class="st">"Sugar Maple"</span> <span class="ot">=</span> <span class="st">"ACESAC"</span>,</span>
+<span id="cb4-53"><a href="#cb4-53" aria-hidden="true" tabindex="-1"></a>                                    <span class="st">"Bitternut Hickory"</span> <span class="ot">=</span> <span class="st">"CARCOR"</span>,</span>
+<span id="cb4-54"><a href="#cb4-54" aria-hidden="true" tabindex="-1"></a>                                    <span class="st">"American Ash"</span> <span class="ot">=</span> <span class="st">"FRAAME"</span>,</span>
+<span id="cb4-55"><a href="#cb4-55" aria-hidden="true" tabindex="-1"></a>                                    <span class="st">"Black Walnut"</span> <span class="ot">=</span> <span class="st">"JUGNIG"</span>,</span>
+<span id="cb4-56"><a href="#cb4-56" aria-hidden="true" tabindex="-1"></a>                                    <span class="st">"Eastern Hophornbeam"</span> <span class="ot">=</span> <span class="st">"OSTVIR"</span>,</span>
+<span id="cb4-57"><a href="#cb4-57" aria-hidden="true" tabindex="-1"></a>                                    <span class="st">"Bigtooth Aspen"</span> <span class="ot">=</span> <span class="st">"POPGRA"</span>,</span>
+<span id="cb4-58"><a href="#cb4-58" aria-hidden="true" tabindex="-1"></a>                                    <span class="st">"Black Cherry"</span> <span class="ot">=</span> <span class="st">"PRUSER"</span>,</span>
+<span id="cb4-59"><a href="#cb4-59" aria-hidden="true" tabindex="-1"></a>                                    <span class="st">"Chokecherry"</span> <span class="ot">=</span> <span class="st">"PRUVIR"</span>,</span>
+<span id="cb4-60"><a href="#cb4-60" aria-hidden="true" tabindex="-1"></a>                                    <span class="st">"White Oak"</span> <span class="ot">=</span> <span class="st">"QUEALB"</span>,</span>
+<span id="cb4-61"><a href="#cb4-61" aria-hidden="true" tabindex="-1"></a>                                    <span class="st">"Bur Oak"</span> <span class="ot">=</span> <span class="st">"QUEMAC"</span>,</span>
+<span id="cb4-62"><a href="#cb4-62" aria-hidden="true" tabindex="-1"></a>                                    <span class="st">"Red Oak"</span> <span class="ot">=</span> <span class="st">"QUERUB"</span>,</span>
+<span id="cb4-63"><a href="#cb4-63" aria-hidden="true" tabindex="-1"></a>                                    <span class="st">"Common Buckthorn"</span> <span class="ot">=</span> <span class="st">"RHACAT"</span>,</span>
+<span id="cb4-64"><a href="#cb4-64" aria-hidden="true" tabindex="-1"></a>                                    <span class="st">"American Basswood"</span> <span class="ot">=</span> <span class="st">"TILAME"</span>,</span>
+<span id="cb4-65"><a href="#cb4-65" aria-hidden="true" tabindex="-1"></a>                                    <span class="st">"American Elm"</span> <span class="ot">=</span> <span class="st">"ULMAME"</span>)) <span class="sc">|&gt;</span> <span class="co">#create new col species_name</span></span>
+<span id="cb4-66"><a href="#cb4-66" aria-hidden="true" tabindex="-1"></a>   <span class="fu">mutate</span>(<span class="at">species_genus =</span> <span class="fu">fct_collapse</span>(species_genus,</span>
+<span id="cb4-67"><a href="#cb4-67" aria-hidden="true" tabindex="-1"></a>                                       <span class="at">Acer =</span> <span class="fu">c</span>(<span class="st">"ACEGIN"</span>, <span class="st">"ACENEG"</span>, <span class="st">"ACERUB"</span>, <span class="st">"ACESAC"</span>),</span>
+<span id="cb4-68"><a href="#cb4-68" aria-hidden="true" tabindex="-1"></a>                                       <span class="at">Caryus =</span> <span class="fu">c</span>(<span class="st">"CARCOR"</span>),</span>
+<span id="cb4-69"><a href="#cb4-69" aria-hidden="true" tabindex="-1"></a>                                       <span class="at">Fraxinus =</span> <span class="fu">c</span>(<span class="st">"FRAAME"</span>),</span>
+<span id="cb4-70"><a href="#cb4-70" aria-hidden="true" tabindex="-1"></a>                                       <span class="at">Juglans =</span> <span class="fu">c</span>(<span class="st">"JUGNIG"</span>),</span>
+<span id="cb4-71"><a href="#cb4-71" aria-hidden="true" tabindex="-1"></a>                                       <span class="at">Ostrya =</span> <span class="fu">c</span>(<span class="st">"OSTVIR"</span>),</span>
+<span id="cb4-72"><a href="#cb4-72" aria-hidden="true" tabindex="-1"></a>                                       <span class="at">Populus =</span> <span class="fu">c</span>(<span class="st">"POPGRA"</span>),</span>
+<span id="cb4-73"><a href="#cb4-73" aria-hidden="true" tabindex="-1"></a>                                       <span class="at">Prunus =</span> <span class="fu">c</span>(<span class="st">"PRUSER"</span>, <span class="st">"PRUVIR"</span>),</span>
+<span id="cb4-74"><a href="#cb4-74" aria-hidden="true" tabindex="-1"></a>                                       <span class="at">Quercus =</span> <span class="fu">c</span>(<span class="st">"QUEALB"</span>, <span class="st">"QUEMAC"</span>, <span class="st">"QUERUB"</span>),</span>
+<span id="cb4-75"><a href="#cb4-75" aria-hidden="true" tabindex="-1"></a>                                       <span class="at">Rhamnus =</span> <span class="fu">c</span>(<span class="st">"RHACAT"</span>),</span>
+<span id="cb4-76"><a href="#cb4-76" aria-hidden="true" tabindex="-1"></a>                                       <span class="at">Tilia =</span> <span class="fu">c</span>(<span class="st">"TILAME"</span>),</span>
+<span id="cb4-77"><a href="#cb4-77" aria-hidden="true" tabindex="-1"></a>                                       <span class="at">Ulmus =</span> <span class="fu">c</span>(<span class="st">"ULMAME"</span>))) <span class="sc">|&gt;</span> <span class="co">#create new col species_genus</span></span>
+<span id="cb4-78"><a href="#cb4-78" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">plot_name_num =</span> <span class="fu">case_when</span>(<span class="fu">str_detect</span>(plot_name, <span class="st">"northnorth"</span>) <span class="sc">~</span> <span class="dv">2</span>,</span>
+<span id="cb4-79"><a href="#cb4-79" aria-hidden="true" tabindex="-1"></a>                                  <span class="fu">str_detect</span>(plot_name, <span class="st">"northsouth"</span>) <span class="sc">~</span> <span class="dv">1</span>,</span>
+<span id="cb4-80"><a href="#cb4-80" aria-hidden="true" tabindex="-1"></a>                                  <span class="fu">str_detect</span>(plot_name, <span class="st">"southnorth"</span>) <span class="sc">~</span> <span class="dv">3</span>,</span>
+<span id="cb4-81"><a href="#cb4-81" aria-hidden="true" tabindex="-1"></a>                                  <span class="fu">str_detect</span>(plot_name, <span class="st">"southsouth"</span>) <span class="sc">~</span> <span class="dv">4</span>,)) <span class="sc">|&gt;</span> <span class="co">#plot name chr to numeric</span></span>
+<span id="cb4-82"><a href="#cb4-82" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">hl_density =</span> <span class="fu">case_when</span>(<span class="fu">str_detect</span>(plot_name, <span class="st">"northnorth"</span>) <span class="sc">~</span> <span class="st">"Low Density"</span>,</span>
+<span id="cb4-83"><a href="#cb4-83" aria-hidden="true" tabindex="-1"></a>                                  <span class="fu">str_detect</span>(plot_name, <span class="st">"northsouth"</span>) <span class="sc">~</span> <span class="st">"Low Density"</span>,</span>
+<span id="cb4-84"><a href="#cb4-84" aria-hidden="true" tabindex="-1"></a>                                  <span class="fu">str_detect</span>(plot_name, <span class="st">"southnorth"</span>) <span class="sc">~</span> <span class="st">"High Density"</span>,</span>
+<span id="cb4-85"><a href="#cb4-85" aria-hidden="true" tabindex="-1"></a>                                  <span class="fu">str_detect</span>(plot_name, <span class="st">"southsouth"</span>) <span class="sc">~</span> <span class="st">"High Density"</span>)) <span class="sc">|&gt;</span> <span class="co">#new col plots high or low density</span></span>
+<span id="cb4-86"><a href="#cb4-86" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">species_name =</span> <span class="fu">as.factor</span>(species_name))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="pivoting-for-visualization" class="level1">
+<h1>Pivoting for Visualization</h1>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>dat_all_pivot <span class="ot">&lt;-</span> dat_all <span class="sc">|&gt;</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">starts_with</span>(<span class="st">"dbh_"</span>),</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>               <span class="at">names_to =</span> <span class="st">"year"</span>,</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>               <span class="at">values_to =</span> <span class="st">"dbh"</span>,</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>               <span class="at">names_prefix =</span> <span class="st">"dbh_"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co">#How many of each species are in each plot?</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>tbl1 <span class="ot">&lt;-</span> <span class="fu">table</span>(dat_all<span class="sc">$</span>species_name, dat_all<span class="sc">$</span>plot_name)</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>tbl1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                     
+                      northnorth northsouth southnorth southsouth
+  American Ash                 3         43         18         45
+  Bur Oak                     24          1          0          0
+  Bigtooth Aspen               1          0          0          0
+  White Oak                   18          1          0          0
+  Red Oak                      2          0          1          0
+  Sugar Maple                  8          5          0          2
+  American Basswood            4          0          0          0
+  American Elm                 5          3          0          0
+  Bitternut Hickory            1          0          0          0
+  Chokecherry                  1          1          0          0
+  Black Cherry                 1          1          0          0
+  Black Walnut                 0          3         13          7
+  Boxelder                     0          5          4          2
+  Eastern Hophornbeam          0          5          0          0
+  Common Buckthorn             0          1          0          0
+  Red Maple                    0          0         24          5
+  Amur Maple                   0          0          6          0</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>prop1 <span class="ot">&lt;-</span> <span class="fu">prop.table</span>(tbl1, <span class="at">margin =</span> <span class="dv">1</span>)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>prop1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                     
+                      northnorth northsouth southnorth southsouth
+  American Ash        0.02752294 0.39449541 0.16513761 0.41284404
+  Bur Oak             0.96000000 0.04000000 0.00000000 0.00000000
+  Bigtooth Aspen      1.00000000 0.00000000 0.00000000 0.00000000
+  White Oak           0.94736842 0.05263158 0.00000000 0.00000000
+  Red Oak             0.66666667 0.00000000 0.33333333 0.00000000
+  Sugar Maple         0.53333333 0.33333333 0.00000000 0.13333333
+  American Basswood   1.00000000 0.00000000 0.00000000 0.00000000
+  American Elm        0.62500000 0.37500000 0.00000000 0.00000000
+  Bitternut Hickory   1.00000000 0.00000000 0.00000000 0.00000000
+  Chokecherry         0.50000000 0.50000000 0.00000000 0.00000000
+  Black Cherry        0.50000000 0.50000000 0.00000000 0.00000000
+  Black Walnut        0.00000000 0.13043478 0.56521739 0.30434783
+  Boxelder            0.00000000 0.45454545 0.36363636 0.18181818
+  Eastern Hophornbeam 0.00000000 1.00000000 0.00000000 0.00000000
+  Common Buckthorn    0.00000000 1.00000000 0.00000000 0.00000000
+  Red Maple           0.00000000 0.00000000 0.82758621 0.17241379
+  Amur Maple          0.00000000 0.00000000 1.00000000 0.00000000</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>dat_all <span class="sc">|&gt;</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tabyl</span>(species_name, plot_name) <span class="sc">|&gt;</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">adorn_totals</span>(<span class="fu">c</span>(<span class="st">"row"</span>, <span class="st">"col"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">adorn_percentages</span>(<span class="at">denominator =</span> <span class="st">"col"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">adorn_pct_formatting</span>() <span class="sc">|&gt;</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">adorn_ns</span>() <span class="sc">|&gt;</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>  knitr<span class="sc">::</span><span class="fu">kable</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 24%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 16%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">species_name</th>
+<th style="text-align: left;">northnorth</th>
+<th style="text-align: left;">northsouth</th>
+<th style="text-align: left;">southnorth</th>
+<th style="text-align: left;">southsouth</th>
+<th style="text-align: left;">Total</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">American Ash</td>
+<td style="text-align: left;">4.1% (3)</td>
+<td style="text-align: left;">58.1% (43)</td>
+<td style="text-align: left;">24.7% (18)</td>
+<td style="text-align: left;">69.2% (45)</td>
+<td style="text-align: left;">38.1% (109)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Bur Oak</td>
+<td style="text-align: left;">32.4% (24)</td>
+<td style="text-align: left;">1.4% (1)</td>
+<td style="text-align: left;">0.0% (0)</td>
+<td style="text-align: left;">0.0% (0)</td>
+<td style="text-align: left;">8.7% (25)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Bigtooth Aspen</td>
+<td style="text-align: left;">1.4% (1)</td>
+<td style="text-align: left;">0.0% (0)</td>
+<td style="text-align: left;">0.0% (0)</td>
+<td style="text-align: left;">0.0% (0)</td>
+<td style="text-align: left;">0.3% (1)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">White Oak</td>
+<td style="text-align: left;">24.3% (18)</td>
+<td style="text-align: left;">1.4% (1)</td>
+<td style="text-align: left;">0.0% (0)</td>
+<td style="text-align: left;">0.0% (0)</td>
+<td style="text-align: left;">6.6% (19)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Red Oak</td>
+<td style="text-align: left;">2.7% (2)</td>
+<td style="text-align: left;">0.0% (0)</td>
+<td style="text-align: left;">1.4% (1)</td>
+<td style="text-align: left;">0.0% (0)</td>
+<td style="text-align: left;">1.0% (3)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Sugar Maple</td>
+<td style="text-align: left;">10.8% (8)</td>
+<td style="text-align: left;">6.8% (5)</td>
+<td style="text-align: left;">0.0% (0)</td>
+<td style="text-align: left;">3.1% (2)</td>
+<td style="text-align: left;">5.2% (15)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">American Basswood</td>
+<td style="text-align: left;">5.4% (4)</td>
+<td style="text-align: left;">0.0% (0)</td>
+<td style="text-align: left;">0.0% (0)</td>
+<td style="text-align: left;">0.0% (0)</td>
+<td style="text-align: left;">1.4% (4)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">American Elm</td>
+<td style="text-align: left;">6.8% (5)</td>
+<td style="text-align: left;">4.1% (3)</td>
+<td style="text-align: left;">0.0% (0)</td>
+<td style="text-align: left;">0.0% (0)</td>
+<td style="text-align: left;">2.8% (8)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Bitternut Hickory</td>
+<td style="text-align: left;">1.4% (1)</td>
+<td style="text-align: left;">0.0% (0)</td>
+<td style="text-align: left;">0.0% (0)</td>
+<td style="text-align: left;">0.0% (0)</td>
+<td style="text-align: left;">0.3% (1)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Chokecherry</td>
+<td style="text-align: left;">1.4% (1)</td>
+<td style="text-align: left;">1.4% (1)</td>
+<td style="text-align: left;">0.0% (0)</td>
+<td style="text-align: left;">0.0% (0)</td>
+<td style="text-align: left;">0.7% (2)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Black Cherry</td>
+<td style="text-align: left;">1.4% (1)</td>
+<td style="text-align: left;">1.4% (1)</td>
+<td style="text-align: left;">0.0% (0)</td>
+<td style="text-align: left;">0.0% (0)</td>
+<td style="text-align: left;">0.7% (2)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Black Walnut</td>
+<td style="text-align: left;">0.0% (0)</td>
+<td style="text-align: left;">4.1% (3)</td>
+<td style="text-align: left;">17.8% (13)</td>
+<td style="text-align: left;">10.8% (7)</td>
+<td style="text-align: left;">8.0% (23)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Boxelder</td>
+<td style="text-align: left;">0.0% (0)</td>
+<td style="text-align: left;">6.8% (5)</td>
+<td style="text-align: left;">5.5% (4)</td>
+<td style="text-align: left;">3.1% (2)</td>
+<td style="text-align: left;">3.8% (11)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Eastern Hophornbeam</td>
+<td style="text-align: left;">0.0% (0)</td>
+<td style="text-align: left;">6.8% (5)</td>
+<td style="text-align: left;">0.0% (0)</td>
+<td style="text-align: left;">0.0% (0)</td>
+<td style="text-align: left;">1.7% (5)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Common Buckthorn</td>
+<td style="text-align: left;">0.0% (0)</td>
+<td style="text-align: left;">1.4% (1)</td>
+<td style="text-align: left;">0.0% (0)</td>
+<td style="text-align: left;">0.0% (0)</td>
+<td style="text-align: left;">0.3% (1)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Red Maple</td>
+<td style="text-align: left;">0.0% (0)</td>
+<td style="text-align: left;">0.0% (0)</td>
+<td style="text-align: left;">32.9% (24)</td>
+<td style="text-align: left;">7.7% (5)</td>
+<td style="text-align: left;">10.1% (29)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Amur Maple</td>
+<td style="text-align: left;">0.0% (0)</td>
+<td style="text-align: left;">0.0% (0)</td>
+<td style="text-align: left;">8.2% (6)</td>
+<td style="text-align: left;">0.0% (0)</td>
+<td style="text-align: left;">2.1% (6)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">NA</td>
+<td style="text-align: left;">8.1% (6)</td>
+<td style="text-align: left;">6.8% (5)</td>
+<td style="text-align: left;">9.6% (7)</td>
+<td style="text-align: left;">6.2% (4)</td>
+<td style="text-align: left;">7.7% (22)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Total</td>
+<td style="text-align: left;">100.0% (74)</td>
+<td style="text-align: left;">100.0% (74)</td>
+<td style="text-align: left;">100.0% (73)</td>
+<td style="text-align: left;">100.0% (65)</td>
+<td style="text-align: left;">100.0% (286)</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co">#How many of each species are dead in 2024?</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>dat_all <span class="sc">|&gt;</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tabyl</span>(species_name, dead_2024) <span class="sc">|&gt;</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">adorn_totals</span>(<span class="fu">c</span>(<span class="st">"row"</span>, <span class="st">"col"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">adorn_percentages</span>(<span class="at">denominator =</span> <span class="st">"col"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">adorn_pct_formatting</span>() <span class="sc">|&gt;</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">adorn_ns</span>() <span class="sc">|&gt;</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>  knitr<span class="sc">::</span><span class="fu">kable</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 28%">
+<col style="width: 16%">
+<col style="width: 18%">
+<col style="width: 18%">
+<col style="width: 18%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">species_name</th>
+<th style="text-align: left;">DEAD</th>
+<th style="text-align: left;">DEADNOLEAVES</th>
+<th style="text-align: left;">NODATA</th>
+<th style="text-align: left;">Total</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">American Ash</td>
+<td style="text-align: left;">12.0% (3)</td>
+<td style="text-align: left;">33.3% (2)</td>
+<td style="text-align: left;">40.8% (104)</td>
+<td style="text-align: left;">38.1% (109)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Bur Oak</td>
+<td style="text-align: left;">0.0% (0)</td>
+<td style="text-align: left;">0.0% (0)</td>
+<td style="text-align: left;">9.8% (25)</td>
+<td style="text-align: left;">8.7% (25)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Bigtooth Aspen</td>
+<td style="text-align: left;">0.0% (0)</td>
+<td style="text-align: left;">0.0% (0)</td>
+<td style="text-align: left;">0.4% (1)</td>
+<td style="text-align: left;">0.3% (1)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">White Oak</td>
+<td style="text-align: left;">0.0% (0)</td>
+<td style="text-align: left;">0.0% (0)</td>
+<td style="text-align: left;">7.5% (19)</td>
+<td style="text-align: left;">6.6% (19)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Red Oak</td>
+<td style="text-align: left;">0.0% (0)</td>
+<td style="text-align: left;">0.0% (0)</td>
+<td style="text-align: left;">1.2% (3)</td>
+<td style="text-align: left;">1.0% (3)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Sugar Maple</td>
+<td style="text-align: left;">0.0% (0)</td>
+<td style="text-align: left;">0.0% (0)</td>
+<td style="text-align: left;">5.9% (15)</td>
+<td style="text-align: left;">5.2% (15)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">American Basswood</td>
+<td style="text-align: left;">0.0% (0)</td>
+<td style="text-align: left;">0.0% (0)</td>
+<td style="text-align: left;">1.6% (4)</td>
+<td style="text-align: left;">1.4% (4)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">American Elm</td>
+<td style="text-align: left;">0.0% (0)</td>
+<td style="text-align: left;">0.0% (0)</td>
+<td style="text-align: left;">3.1% (8)</td>
+<td style="text-align: left;">2.8% (8)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Bitternut Hickory</td>
+<td style="text-align: left;">0.0% (0)</td>
+<td style="text-align: left;">0.0% (0)</td>
+<td style="text-align: left;">0.4% (1)</td>
+<td style="text-align: left;">0.3% (1)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Chokecherry</td>
+<td style="text-align: left;">0.0% (0)</td>
+<td style="text-align: left;">0.0% (0)</td>
+<td style="text-align: left;">0.8% (2)</td>
+<td style="text-align: left;">0.7% (2)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Black Cherry</td>
+<td style="text-align: left;">0.0% (0)</td>
+<td style="text-align: left;">0.0% (0)</td>
+<td style="text-align: left;">0.8% (2)</td>
+<td style="text-align: left;">0.7% (2)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Black Walnut</td>
+<td style="text-align: left;">4.0% (1)</td>
+<td style="text-align: left;">50.0% (3)</td>
+<td style="text-align: left;">7.5% (19)</td>
+<td style="text-align: left;">8.0% (23)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Boxelder</td>
+<td style="text-align: left;">32.0% (8)</td>
+<td style="text-align: left;">16.7% (1)</td>
+<td style="text-align: left;">0.8% (2)</td>
+<td style="text-align: left;">3.8% (11)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Eastern Hophornbeam</td>
+<td style="text-align: left;">0.0% (0)</td>
+<td style="text-align: left;">0.0% (0)</td>
+<td style="text-align: left;">2.0% (5)</td>
+<td style="text-align: left;">1.7% (5)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Common Buckthorn</td>
+<td style="text-align: left;">4.0% (1)</td>
+<td style="text-align: left;">0.0% (0)</td>
+<td style="text-align: left;">0.0% (0)</td>
+<td style="text-align: left;">0.3% (1)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Red Maple</td>
+<td style="text-align: left;">0.0% (0)</td>
+<td style="text-align: left;">0.0% (0)</td>
+<td style="text-align: left;">11.4% (29)</td>
+<td style="text-align: left;">10.1% (29)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Amur Maple</td>
+<td style="text-align: left;">20.0% (5)</td>
+<td style="text-align: left;">0.0% (0)</td>
+<td style="text-align: left;">0.4% (1)</td>
+<td style="text-align: left;">2.1% (6)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">NA</td>
+<td style="text-align: left;">28.0% (7)</td>
+<td style="text-align: left;">0.0% (0)</td>
+<td style="text-align: left;">5.9% (15)</td>
+<td style="text-align: left;">7.7% (22)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Total</td>
+<td style="text-align: left;">100.0% (25)</td>
+<td style="text-align: left;">100.0% (6)</td>
+<td style="text-align: left;">100.0% (255)</td>
+<td style="text-align: left;">100.0% (286)</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<section id="american-ash-dbh-by-plot-in-2015-and-2024" class="level1">
+<h1>American Ash DBH by Plot in 2015 and 2024</h1>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>dat_all_pivot <span class="sc">|&gt;</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="fu">filter</span>(species_code <span class="sc">==</span> <span class="st">"FRAAME"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="fu">aes</span>(plot_name, dbh, <span class="at">fill =</span> year)) <span class="sc">+</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>() <span class="sc">+</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">stat_boxplot</span>(<span class="at">geom =</span> <span class="st">"errorbar"</span>) <span class="sc">+</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">stat_summary</span>(<span class="at">fun.y =</span> <span class="st">"mean"</span>, <span class="at">geom =</span> <span class="st">"point"</span>, <span class="at">size =</span> <span class="dv">2</span>,</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>                 <span class="at">position =</span> <span class="fu">position_dodge</span>(<span class="at">width =</span> <span class="fl">0.75</span>), <span class="at">color =</span> <span class="st">"white"</span>) <span class="sc">+</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_publish</span>() <span class="sc">+</span></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"#38AAAB"</span>, <span class="st">"#DEF5E5"</span>))<span class="sc">+</span></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">aspect.ratio =</span> <span class="fl">0.5</span>,</span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>        <span class="at">panel.grid.major =</span> <span class="fu">element_line</span>(<span class="at">colour =</span> <span class="st">"black"</span>,</span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>                                        <span class="at">linewidth =</span> <span class="fl">0.05</span>)) <span class="sc">+</span></span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"American Ash Tree DBH by Plot in 2015 and 2024"</span>,</span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Plot Name"</span>,</span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"DBH (cm)"</span>,</span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>       <span class="at">fill =</span> <span class="st">"Year"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Statistical Analysis</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="co">#T-Test</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>dat_all_ash <span class="ot">&lt;-</span> dat_all <span class="sc">|&gt;</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(species_name <span class="sc">==</span> <span class="st">"American Ash"</span>)</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a><span class="fu">t.test</span>(dbh_2024 <span class="sc">~</span> hl_density, <span class="at">data =</span> dat_all_ash)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Welch Two Sample t-test
+
+data:  dbh_2024 by hl_density
+t = 0.081381, df = 103.96, p-value = 0.9353
+alternative hypothesis: true difference in means between group High Density and group Low Density is not equal to 0
+95 percent confidence interval:
+ -2.382149  2.586035
+sample estimates:
+mean in group High Density  mean in group Low Density 
+                  13.38064                   13.27870 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">t.test</span>(dbh_2015 <span class="sc">~</span> hl_density, <span class="at">data =</span> dat_all_ash)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Welch Two Sample t-test
+
+data:  dbh_2015 by hl_density
+t = -4.7587, df = 102.88, p-value = 6.384e-06
+alternative hypothesis: true difference in means between group High Density and group Low Density is not equal to 0
+95 percent confidence interval:
+ -5.503890 -2.265709
+sample estimates:
+mean in group High Density  mean in group Low Density 
+                  8.320635                  12.205435 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co">#DBH vs plot location ANOVA</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>model_2015_ash <span class="ot">&lt;-</span> <span class="fu">aov</span>(dbh_2015 <span class="sc">~</span> plot_name, <span class="at">data =</span> dat_all_ash)</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model_2015_ash)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>             Df Sum Sq Mean Sq F value   Pr(&gt;F)    
+plot_name     3  479.7  159.91   8.888 2.66e-05 ***
+Residuals   105 1889.2   17.99                     
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>model_2015_ash<span class="sc">$</span>coefficients</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>        (Intercept) plot_namenorthsouth plot_namesouthnorth plot_namesouthsouth 
+          11.433333            0.825969           -1.369444           -3.810000 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>tukey15 <span class="ot">&lt;-</span> <span class="fu">TukeyHSD</span>(model_2015_ash)</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(tukey15)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  Tukey multiple comparisons of means
+    95% family-wise confidence level
+
+Fit: aov(formula = dbh_2015 ~ plot_name, data = dat_all_ash)
+
+$plot_name
+                           diff        lwr       upr     p adj
+northsouth-northnorth  0.825969  -5.786793  7.438731 0.9879593
+southnorth-northnorth -1.369444  -8.275206  5.536317 0.9546804
+southsouth-northnorth -3.810000 -10.413171  2.793171 0.4373882
+southnorth-northsouth -2.195413  -5.304217  0.913390 0.2589815
+southsouth-northsouth -4.635969  -6.997533 -2.274405 0.0000081
+southsouth-southnorth -2.440556  -5.528906  0.647795 0.1721049</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(tukey15, <span class="at">las =</span> <span class="dv">0</span> , <span class="at">col =</span> <span class="st">"brown"</span>, <span class="at">cex.axis=</span><span class="fl">0.40</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-7-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>model_2024_ash <span class="ot">&lt;-</span> <span class="fu">aov</span>(dbh_2024 <span class="sc">~</span> plot_name, <span class="at">data =</span> dat_all_ash)</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model_2024_ash)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>             Df Sum Sq Mean Sq F value Pr(&gt;F)
+plot_name     3     37   12.36    0.28  0.839
+Residuals   102   4496   44.08               
+3 observations deleted due to missingness</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>model_2024_ash<span class="sc">$</span>coefficients</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>        (Intercept) plot_namenorthsouth plot_namesouthnorth plot_namesouthsouth 
+          15.533333           -2.411938           -1.223039           -2.520233 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>tukey24 <span class="ot">&lt;-</span> <span class="fu">TukeyHSD</span>(model_2024_ash)</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(tukey24)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  Tukey multiple comparisons of means
+    95% family-wise confidence level
+
+Fit: aov(formula = dbh_2024 ~ plot_name, data = dat_all_ash)
+
+$plot_name
+                            diff        lwr      upr     p adj
+northsouth-northnorth -2.4119380 -12.767477 7.943601 0.9292169
+southnorth-northnorth -1.2230392 -12.082758 9.636679 0.9910924
+southsouth-northnorth -2.5202326 -12.875772 7.835307 0.9202635
+southnorth-northsouth  1.1888988  -3.779376 6.157173 0.9238205
+southsouth-northsouth -0.1082946  -3.848276 3.631687 0.9998438
+southsouth-southnorth -1.2971933  -6.265468 3.671081 0.9037437</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(tukey24, <span class="at">las =</span> <span class="dv">0</span> , <span class="at">col =</span> <span class="st">"brown"</span>, <span class="at">cex.axis=</span><span class="fl">0.40</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-7-3.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="growth-factor-by-plot" class="level1">
+<h1>Growth Factor by Plot</h1>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>dat_all <span class="sc">|&gt;</span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(hl_density, growth_factor, <span class="at">fill =</span> hl_density)) <span class="sc">+</span></span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>() <span class="sc">+</span></span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_boxplot</span>(<span class="at">geom =</span> <span class="st">"errorbar"</span>, </span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>               <span class="at">width =</span> <span class="fl">0.25</span>) <span class="sc">+</span></span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>() <span class="sc">+</span></span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_publish</span>() <span class="sc">+</span></span>
+<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"#38AAAB"</span>, <span class="st">"#DEF5E5"</span>))<span class="sc">+</span></span>
+<span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">panel.grid.major =</span> <span class="fu">element_line</span>(<span class="at">colour =</span> <span class="st">"black"</span>,</span>
+<span id="cb31-10"><a href="#cb31-10" aria-hidden="true" tabindex="-1"></a>                                        <span class="at">linewidth =</span> <span class="fl">0.05</span>)) <span class="sc">+</span></span>
+<span id="cb31-11"><a href="#cb31-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Growth Factor by Ash Tree Density"</span>,</span>
+<span id="cb31-12"><a href="#cb31-12" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Ash Tree Density"</span>,</span>
+<span id="cb31-13"><a href="#cb31-13" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Growth Factor (cm/yr)"</span>,</span>
+<span id="cb31-14"><a href="#cb31-14" aria-hidden="true" tabindex="-1"></a>       <span class="at">fill =</span> <span class="st">"Tree Density"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>dat_all <span class="sc">|&gt;</span></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="fu">aes</span>(plot_name, growth_factor, <span class="at">fill =</span> plot_name)) <span class="sc">+</span></span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_boxplot</span>(<span class="at">geom =</span> <span class="st">"errorbar"</span>, </span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>               <span class="at">width =</span> <span class="fl">0.25</span>) <span class="sc">+</span></span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>() <span class="sc">+</span></span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_publish</span>() <span class="sc">+</span></span>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_viridis_d</span>(<span class="at">option =</span> <span class="st">"mako"</span>) <span class="sc">+</span></span>
+<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">panel.grid.major =</span> <span class="fu">element_line</span>(<span class="at">colour =</span> <span class="st">"black"</span>,</span>
+<span id="cb32-9"><a href="#cb32-9" aria-hidden="true" tabindex="-1"></a>                                        <span class="at">linewidth =</span> <span class="fl">0.05</span>)) <span class="sc">+</span></span>
+<span id="cb32-10"><a href="#cb32-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Growth Factor by Plot"</span>,</span>
+<span id="cb32-11"><a href="#cb32-11" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Plot Name"</span>,</span>
+<span id="cb32-12"><a href="#cb32-12" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Growth Factor (cm/yr)"</span>,</span>
+<span id="cb32-13"><a href="#cb32-13" aria-hidden="true" tabindex="-1"></a>       <span class="at">fill =</span> <span class="st">"Plot Name"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-8-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Statistical Analysis</span></span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a><span class="co">#T-test</span></span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a><span class="fu">t.test</span>(growth_factor <span class="sc">~</span> hl_density, <span class="at">data =</span> dat_all)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Welch Two Sample t-test
+
+data:  growth_factor by hl_density
+t = 3.8956, df = 230.52, p-value = 0.0001284
+alternative hypothesis: true difference in means between group High Density and group Low Density is not equal to 0
+95 percent confidence interval:
+ 0.1299268 0.3958522
+sample estimates:
+mean in group High Density  mean in group Low Density 
+                 0.4635862                  0.2006966 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggqqplot</span>(dat_all, <span class="at">x =</span> <span class="st">"growth_factor"</span>, <span class="at">facet.by =</span> <span class="st">"hl_density"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-8-3.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="co">#dat_all &lt;- dat_all |&gt;</span></span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a><span class="co">#  mutate(log_growth = log(growth_factor + 2))</span></span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a><span class="co">#ggqqplot(dat_all, x = "log_growth", facet.by = "hl_density")</span></span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a><span class="co">#t.test(log_growth ~ hl_density, data = dat_all)</span></span>
+<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a><span class="co">#commented out log transform doesn't help</span></span>
+<span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-8"><a href="#cb36-8" aria-hidden="true" tabindex="-1"></a><span class="co">#The true difference in mean growth factor between the high density and low density plots is not equal to zero. We are 95% confident that the true difference in mean growth factor between the high and low density plots is between 0.071 and 0.377 cm/yr. p-value = 0.004385.</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="growth-factor-by-genus" class="level1">
+<h1>Growth Factor by Genus</h1>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Rhamnus not shown because there was only 1 indivdiual in 2015 which died by 2024. </span></span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>dat_all <span class="sc">|&gt;</span></span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a><span class="fu">filter</span>(<span class="fu">is.na</span>(species_code) <span class="sc">==</span> <span class="cn">FALSE</span> <span class="sc">&amp;</span> species_genus <span class="sc">!=</span> <span class="st">"Rhamnus"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="fu">reorder</span>(species_genus, growth_factor, mean), growth_factor, <span class="at">fill =</span> (<span class="fu">reorder</span>(species_genus, growth_factor, mean)))) <span class="sc">+</span></span>
+<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_boxplot</span>(<span class="at">geom =</span> <span class="st">"errorbar"</span>, </span>
+<span id="cb37-6"><a href="#cb37-6" aria-hidden="true" tabindex="-1"></a>               <span class="at">width =</span> <span class="fl">0.25</span>) <span class="sc">+</span></span>
+<span id="cb37-7"><a href="#cb37-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>() <span class="sc">+</span></span>
+<span id="cb37-8"><a href="#cb37-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_publish</span>() <span class="sc">+</span></span>
+<span id="cb37-9"><a href="#cb37-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_viridis_d</span>(<span class="at">option =</span> <span class="st">"mako"</span>) <span class="sc">+</span></span>
+<span id="cb37-10"><a href="#cb37-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">panel.grid.major =</span> <span class="fu">element_line</span>(<span class="at">colour =</span> <span class="st">"black"</span>,</span>
+<span id="cb37-11"><a href="#cb37-11" aria-hidden="true" tabindex="-1"></a>                                        <span class="at">linewidth =</span> <span class="fl">0.05</span>)) <span class="sc">+</span></span>
+<span id="cb37-12"><a href="#cb37-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Growth Factor by Genus"</span>,</span>
+<span id="cb37-13"><a href="#cb37-13" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Genus"</span>,</span>
+<span id="cb37-14"><a href="#cb37-14" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Growth Factor (cm/yr)"</span>,</span>
+<span id="cb37-15"><a href="#cb37-15" aria-hidden="true" tabindex="-1"></a>       <span class="at">fill =</span> <span class="st">"Genus"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="species-and-growth-factor-in-high-and-low-density-plots" class="level1">
+<h1>Species and Growth Factor in High and Low Density Plots</h1>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="co">#High Density Only</span></span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>dat_all <span class="sc">|&gt;</span></span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(species_name) <span class="sc">|&gt;</span></span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">count =</span> <span class="fu">n</span>()) <span class="sc">|&gt;</span></span>
+<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(count <span class="sc">&gt;</span> <span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 8 × 2
+  species_name count
+  &lt;fct&gt;        &lt;int&gt;
+1 American Ash   109
+2 Bur Oak         25
+3 White Oak       19
+4 Sugar Maple     15
+5 Black Walnut    23
+6 Boxelder        11
+7 Red Maple       29
+8 &lt;NA&gt;            22</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="co">#There are at least 10 trees of American Ash, Bur Oak, White Oak, Sugar Maple, Black Walnut, Boxelder, Red Maple. </span></span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a><span class="co"># There are more species (16) in the low density plot vs the high density plot (8)</span></span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a>dat_all <span class="sc">|&gt;</span></span>
+<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(hl_density) <span class="sc">|&gt;</span></span>
+<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">unique_species_n =</span> <span class="fu">n_distinct</span>(species_name))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 2
+  hl_density   unique_species_n
+  &lt;chr&gt;                   &lt;int&gt;
+1 High Density                8
+2 Low Density                16</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>dat_all <span class="sc">|&gt;</span></span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a><span class="fu">filter</span>(<span class="fu">is.na</span>(species_code) <span class="sc">==</span> <span class="cn">FALSE</span> <span class="sc">&amp;</span> hl_density <span class="sc">==</span> <span class="st">"High Density"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a><span class="fu">filter</span>(species_name <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"American Ash"</span>, <span class="st">"Bur Oak"</span>, <span class="st">"White Oak"</span>, <span class="st">"Sugar Maple"</span>, <span class="st">"Black Walnut"</span>, <span class="st">"Boxelder"</span>, <span class="st">"Red Maple"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="fu">reorder</span>(species_name, growth_factor, mean), growth_factor, <span class="at">fill =</span> (<span class="fu">reorder</span>(species_name, growth_factor, mean)))) <span class="sc">+</span></span>
+<span id="cb42-5"><a href="#cb42-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_boxplot</span>(<span class="at">geom =</span> <span class="st">"errorbar"</span>, </span>
+<span id="cb42-6"><a href="#cb42-6" aria-hidden="true" tabindex="-1"></a>               <span class="at">width =</span> <span class="fl">0.25</span>) <span class="sc">+</span></span>
+<span id="cb42-7"><a href="#cb42-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>() <span class="sc">+</span></span>
+<span id="cb42-8"><a href="#cb42-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_publish</span>() <span class="sc">+</span></span>
+<span id="cb42-9"><a href="#cb42-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_viridis_d</span>(<span class="at">option =</span> <span class="st">"mako"</span>) <span class="sc">+</span></span>
+<span id="cb42-10"><a href="#cb42-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">panel.grid.major =</span> <span class="fu">element_line</span>(<span class="at">colour =</span> <span class="st">"black"</span>,</span>
+<span id="cb42-11"><a href="#cb42-11" aria-hidden="true" tabindex="-1"></a>                                        <span class="at">linewidth =</span> <span class="fl">0.05</span>)) <span class="sc">+</span></span>
+<span id="cb42-12"><a href="#cb42-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Growth Factor by Species in High Ash Density Plots"</span>,</span>
+<span id="cb42-13"><a href="#cb42-13" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Species"</span>,</span>
+<span id="cb42-14"><a href="#cb42-14" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Growth Factor (cm/yr)"</span>,</span>
+<span id="cb42-15"><a href="#cb42-15" aria-hidden="true" tabindex="-1"></a>       <span class="at">fill =</span> <span class="st">"Species"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Low Density Only</span></span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>dat_all <span class="sc">|&gt;</span></span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a><span class="fu">filter</span>(<span class="fu">is.na</span>(species_code) <span class="sc">==</span> <span class="cn">FALSE</span> <span class="sc">&amp;</span> hl_density <span class="sc">==</span> <span class="st">"Low Density"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a><span class="fu">filter</span>(species_name <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"American Ash"</span>, <span class="st">"Bur Oak"</span>, <span class="st">"White Oak"</span>, <span class="st">"Sugar Maple"</span>, <span class="st">"Black Walnut"</span>, <span class="st">"Boxelder"</span>, <span class="st">"Red Maple"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb43-5"><a href="#cb43-5" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="fu">reorder</span>(species_name, growth_factor, mean), growth_factor, <span class="at">fill =</span> (<span class="fu">reorder</span>(species_name, growth_factor, mean)))) <span class="sc">+</span></span>
+<span id="cb43-6"><a href="#cb43-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_boxplot</span>(<span class="at">geom =</span> <span class="st">"errorbar"</span>, </span>
+<span id="cb43-7"><a href="#cb43-7" aria-hidden="true" tabindex="-1"></a>               <span class="at">width =</span> <span class="fl">0.25</span>) <span class="sc">+</span></span>
+<span id="cb43-8"><a href="#cb43-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>() <span class="sc">+</span></span>
+<span id="cb43-9"><a href="#cb43-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_publish</span>() <span class="sc">+</span></span>
+<span id="cb43-10"><a href="#cb43-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_viridis_d</span>(<span class="at">option =</span> <span class="st">"mako"</span>) <span class="sc">+</span></span>
+<span id="cb43-11"><a href="#cb43-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">panel.grid.major =</span> <span class="fu">element_line</span>(<span class="at">colour =</span> <span class="st">"black"</span>,</span>
+<span id="cb43-12"><a href="#cb43-12" aria-hidden="true" tabindex="-1"></a>                                        <span class="at">linewidth =</span> <span class="fl">0.05</span>)) <span class="sc">+</span></span>
+<span id="cb43-13"><a href="#cb43-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Growth Factor by Species in Low Ash Density Plots"</span>,</span>
+<span id="cb43-14"><a href="#cb43-14" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Species"</span>,</span>
+<span id="cb43-15"><a href="#cb43-15" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Growth Factor (cm/yr)"</span>,</span>
+<span id="cb43-16"><a href="#cb43-16" aria-hidden="true" tabindex="-1"></a>       <span class="at">fill =</span> <span class="st">"Species"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-10-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="co">#There aren't any Bur Oak or White Oak in the High Density plots. </span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>dat_all <span class="sc">|&gt;</span></span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a><span class="fu">filter</span>(<span class="fu">is.na</span>(species_code) <span class="sc">==</span> <span class="cn">FALSE</span>) <span class="sc">|&gt;</span></span>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="fu">aes</span>(crownclass, growth_factor)) <span class="sc">+</span></span>
+<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_boxplot</span>(<span class="at">geom =</span> <span class="st">"errorbar"</span>,</span>
+<span id="cb45-5"><a href="#cb45-5" aria-hidden="true" tabindex="-1"></a>               <span class="at">width =</span> <span class="fl">0.25</span>) <span class="sc">+</span></span>
+<span id="cb45-6"><a href="#cb45-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>() <span class="sc">+</span></span>
+<span id="cb45-7"><a href="#cb45-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_publish</span>() <span class="sc">+</span></span>
+<span id="cb45-8"><a href="#cb45-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_viridis_d</span>(<span class="at">option =</span> <span class="st">"mako"</span>) <span class="sc">+</span></span>
+<span id="cb45-9"><a href="#cb45-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">panel.grid.major =</span> <span class="fu">element_line</span>(<span class="at">colour =</span> <span class="st">"black"</span>,</span>
+<span id="cb45-10"><a href="#cb45-10" aria-hidden="true" tabindex="-1"></a>                                        <span class="at">linewidth =</span> <span class="fl">0.05</span>)) <span class="sc">+</span></span>
+<span id="cb45-11"><a href="#cb45-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Growth Factor by Crownclass"</span>,</span>
+<span id="cb45-12"><a href="#cb45-12" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Crownclass"</span>,</span>
+<span id="cb45-13"><a href="#cb45-13" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Growth Factor (cm/yr)"</span>,</span>
+<span id="cb45-14"><a href="#cb45-14" aria-hidden="true" tabindex="-1"></a>       <span class="at">fill =</span> <span class="st">"Crownclass"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>dat_all <span class="sc">|&gt;</span></span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a><span class="fu">filter</span>(<span class="fu">is.na</span>(species_code) <span class="sc">==</span> <span class="cn">FALSE</span>) <span class="sc">|&gt;</span></span>
+<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="fu">aes</span>(soundness, growth_factor)) <span class="sc">+</span></span>
+<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_boxplot</span>(<span class="at">geom =</span> <span class="st">"errorbar"</span>,</span>
+<span id="cb46-5"><a href="#cb46-5" aria-hidden="true" tabindex="-1"></a>               <span class="at">width =</span> <span class="fl">0.25</span>) <span class="sc">+</span></span>
+<span id="cb46-6"><a href="#cb46-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>() <span class="sc">+</span></span>
+<span id="cb46-7"><a href="#cb46-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_publish</span>() <span class="sc">+</span></span>
+<span id="cb46-8"><a href="#cb46-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_viridis_d</span>(<span class="at">option =</span> <span class="st">"mako"</span>) <span class="sc">+</span></span>
+<span id="cb46-9"><a href="#cb46-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">panel.grid.major =</span> <span class="fu">element_line</span>(<span class="at">colour =</span> <span class="st">"black"</span>,</span>
+<span id="cb46-10"><a href="#cb46-10" aria-hidden="true" tabindex="-1"></a>                                        <span class="at">linewidth =</span> <span class="fl">0.05</span>)) <span class="sc">+</span></span>
+<span id="cb46-11"><a href="#cb46-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Growth Factor by Soundness"</span>,</span>
+<span id="cb46-12"><a href="#cb46-12" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Soundness"</span>,</span>
+<span id="cb46-13"><a href="#cb46-13" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Growth Factor (cm/yr)"</span>,</span>
+<span id="cb46-14"><a href="#cb46-14" aria-hidden="true" tabindex="-1"></a>       <span class="at">fill =</span> <span class="st">"Genus"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-11-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>dat_all <span class="sc">|&gt;</span></span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a><span class="fu">filter</span>(<span class="fu">is.na</span>(species_code) <span class="sc">==</span> <span class="cn">FALSE</span>) <span class="sc">|&gt;</span></span>
+<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="fu">aes</span>(stemtype, growth_factor)) <span class="sc">+</span></span>
+<span id="cb47-4"><a href="#cb47-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_boxplot</span>(<span class="at">geom =</span> <span class="st">"errorbar"</span>,</span>
+<span id="cb47-5"><a href="#cb47-5" aria-hidden="true" tabindex="-1"></a>               <span class="at">width =</span> <span class="fl">0.25</span>) <span class="sc">+</span></span>
+<span id="cb47-6"><a href="#cb47-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>() <span class="sc">+</span></span>
+<span id="cb47-7"><a href="#cb47-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_publish</span>() <span class="sc">+</span></span>
+<span id="cb47-8"><a href="#cb47-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_viridis_d</span>(<span class="at">option =</span> <span class="st">"mako"</span>) <span class="sc">+</span></span>
+<span id="cb47-9"><a href="#cb47-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">panel.grid.major =</span> <span class="fu">element_line</span>(<span class="at">colour =</span> <span class="st">"black"</span>,</span>
+<span id="cb47-10"><a href="#cb47-10" aria-hidden="true" tabindex="-1"></a>                                        <span class="at">linewidth =</span> <span class="fl">0.05</span>)) <span class="sc">+</span></span>
+<span id="cb47-11"><a href="#cb47-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Growth Factor by Stem Type"</span>,</span>
+<span id="cb47-12"><a href="#cb47-12" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Stem Type"</span>,</span>
+<span id="cb47-13"><a href="#cb47-13" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Growth Factor (cm/yr)"</span>,</span>
+<span id="cb47-14"><a href="#cb47-14" aria-hidden="true" tabindex="-1"></a>       <span class="at">fill =</span> <span class="st">"Stem Type"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-11-3.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="unused-t-tests" class="level1">
+<h1>Unused T-tests:</h1>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="co">#t.test(dbh_2024 ~ stemtype, data = dat_all)</span></span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a><span class="co">#t.test(dbh_2024 ~ soundness, data = dat_all)</span></span>
+<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a><span class="co">#t.test(height_2024 ~ hl_density, data = dat_all)</span></span>
+<span id="cb48-4"><a href="#cb48-4" aria-hidden="true" tabindex="-1"></a><span class="co">#t.test(dbh_2024 ~ hl_density, data = dat_all)</span></span>
+<span id="cb48-5"><a href="#cb48-5" aria-hidden="true" tabindex="-1"></a><span class="co">#t.test(dbh_2015 ~ hl_density, data = dat_all)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="linear-regression" class="level1">
+<h1>Linear Regression:</h1>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="co">#dat_all &lt;- dat_all |&gt; </span></span>
+<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a><span class="co">#  mutate(dbh_2015_log = log(dbh_2015),</span></span>
+<span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a><span class="co">#         dbh_2024_log = log(dbh_2024))</span></span>
+<span id="cb49-4"><a href="#cb49-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-5"><a href="#cb49-5" aria-hidden="true" tabindex="-1"></a><span class="co">#dbh_log_model &lt;- lm(dbh_2024_log ~ dbh_2015_log, data = dat_all)</span></span>
+<span id="cb49-6"><a href="#cb49-6" aria-hidden="true" tabindex="-1"></a><span class="co">#resid_panel(dbh_log_model)</span></span>
+<span id="cb49-7"><a href="#cb49-7" aria-hidden="true" tabindex="-1"></a><span class="co">#summary(dbh_log_model)</span></span>
+<span id="cb49-8"><a href="#cb49-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-9"><a href="#cb49-9" aria-hidden="true" tabindex="-1"></a><span class="co">#dat_all |&gt;</span></span>
+<span id="cb49-10"><a href="#cb49-10" aria-hidden="true" tabindex="-1"></a><span class="co">#ggplot(aes(dbh_2015_log, dbh_2024_log)) +</span></span>
+<span id="cb49-11"><a href="#cb49-11" aria-hidden="true" tabindex="-1"></a><span class="co">#  geom_point() +</span></span>
+<span id="cb49-12"><a href="#cb49-12" aria-hidden="true" tabindex="-1"></a><span class="co">#  geom_smooth(method = lm)</span></span>
+<span id="cb49-13"><a href="#cb49-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-14"><a href="#cb49-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-15"><a href="#cb49-15" aria-hidden="true" tabindex="-1"></a>dat_all <span class="sc">|&gt;</span></span>
+<span id="cb49-16"><a href="#cb49-16" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="fu">aes</span>(dbh_2015, dbh_2024)) <span class="sc">+</span></span>
+<span id="cb49-17"><a href="#cb49-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb49-18"><a href="#cb49-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> lm)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>dbh_model <span class="ot">&lt;-</span> <span class="fu">lm</span>(dbh_2024 <span class="sc">~</span> dbh_2015, <span class="at">data =</span> dat_all)</span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a><span class="fu">resid_panel</span>(dbh_model)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-13-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(dbh_model)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = dbh_2024 ~ dbh_2015, data = dat_all)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-15.6010  -2.4763  -0.7107   1.7024  19.3509 
+
+Coefficients:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  3.99000    0.66208   6.026  6.3e-09 ***
+dbh_2015     0.87824    0.06757  12.997  &lt; 2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 4.803 on 239 degrees of freedom
+  (45 observations deleted due to missingness)
+Multiple R-squared:  0.4141,    Adjusted R-squared:  0.4117 
+F-statistic: 168.9 on 1 and 239 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="fu">confint</span>(dbh_model)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                2.5 %   97.5 %
+(Intercept) 2.6857434 5.294247
+dbh_2015    0.7451297 1.011355</code></pre>
+</div>
+</div>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
