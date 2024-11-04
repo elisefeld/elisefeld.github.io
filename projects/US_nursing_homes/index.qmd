@@ -7,7 +7,7 @@ categories: ["ggplot", "SDS 264: Data Science 2"]
 draft: false
 ---
 
-In this project, I used the [Skilled Nursing Facility Cost Report](https://data.cms.gov/provider-compliance/cost-report/skilled-nursing-facility-cost-report) collected by the Centers for Medicare & Medicaid Services in order to investigate characteristics of nursing homes in the United States. The dataset includes a wide range of information about nursing homes, including revenue, number of beds, and average stay duration. 
+In this project, I used the [Skilled Nursing Facility Cost Report](https://data.cms.gov/provider-compliance/cost-report/skilled-nursing-facility-cost-report) collected by the Centers for Medicare & Medicaid Services in order to investigate characteristics of nursing homes in the United States. The dataset includes a wide range of information about nursing homes, including revenue, number of beds, and average stay duration.
 
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE) 
@@ -24,7 +24,9 @@ library(envalysis)
 ```
 
 # Data Cleaning
+
 ## Importing Data
+
 ```{r}
 # Loading Nursing Home Data 
 # https://data.cms.gov/provider-compliance/cost-report/skilled-nursing-facility-cost-report
@@ -170,6 +172,7 @@ favstats(~tot_revenue_homes,  data = distinct)
 ```
 
 ## Outlier Analysis
+
 ```{r}
 outliers_check <- nursing_data |>
   select(facility_name, state_code, gross_revenue, number_of_beds, snf_average_length_of_stay_total)
@@ -191,12 +194,11 @@ nursing_data |>
   
 ```
 
-Based on this analysis, two points were removed from the dataset.   
-- **Twin Fountains Home (Georgia)** had a gross revenue of $1,300,406,865    
+Based on this analysis, two points were removed from the dataset.\
+- **Twin Fountains Home (Georgia)** had a gross revenue of \$1,300,406,865\
 - **Sanilac County Medical Care Facility (Michigan)** had 22,287 beds.
 
-
-# Plots 
+# Plots
 
 ```{r}
 nursing_summary |>
@@ -267,7 +269,6 @@ leaflet(nursing_summary) |>
             position = "bottomright")
               
 ```
-
 
 ```{r}
 nursing_summary <- nursing_summary |>
