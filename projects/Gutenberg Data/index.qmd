@@ -3,7 +3,7 @@ title: "Gutenberg Data"
 description: |
   Acquiring Text Data from Gutenberg.org with Theresa Worden 
 categories: ["text", "SDS 264: Data Science 2"]
-#image: bren-hex-white-bg.png
+image: images/books.jpeg
 draft: false
 ---
 
