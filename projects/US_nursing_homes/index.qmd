@@ -1,16 +1,16 @@
 ---
 title: "United States Nursing Home Data"
 description: |
-  Exploratory Data Analysis of US Nursing Home Data from the Skilled Nursing Facility Cost Report (Data.CMS.gov)
+  An Exploratory Data Analysis of US Nursing Home Data from the Skilled Nursing Facility Cost Report
 categories: ["ggplot", "SDS 264: Data Science 2"]
 #image: bren-hex-white-bg.png
 draft: false
 ---
 
-## Data Import
+In this project, I used the [Skilled Nursing Facility Cost Report](https://data.cms.gov/provider-compliance/cost-report/skilled-nursing-facility-cost-report) collected by the Centers for Medicare & Medicaid Services in order to investigate characteristics of nursing homes in the United States. The dataset includes a wide range of information about nursing homes, including revenue, number of beds, and average stay duration. 
 
-```{r setup, include = FALSE} 
-knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE) 
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE) 
 
 library(tidyverse)
 library(janitor)
@@ -21,20 +21,24 @@ library(sf)
 library(maps)
 library(htmltools)
 library(envalysis)
+```
 
-# Import Nursing Home Data 
+# Data Cleaning
+## Importing Data
+```{r}
+# Loading Nursing Home Data 
 # https://data.cms.gov/provider-compliance/cost-report/skilled-nursing-facility-cost-report
 nursing_data <- read_csv("https://raw.githubusercontent.com/elisefeld/elise_data_dump/main/nursing_data.csv") |>
   clean_names() |>
   select(-nursing_and_allied_health_education_activities)
 
-# Import List of State Names and State Abbreviations for Joining nursing_data with states_sf
+# Loading state abbreviations for for joining with geographic data
 state_abbr_data <- read_csv("https://raw.githubusercontent.com/elisefeld/elise_data_dump/main/state_abbr.csv") |>
   clean_names() |>
   select(-standard) |>
   mutate(state = str_to_lower(state))
 
-# Import US States Data Using sf and maps Packages
+# Loading US states geographic data using sf and maps packages
 states_sf <- read_sf("https://rstudio.github.io/leaflet/json/us-states.geojson") |>
   select(name, geometry) |>
   mutate(name = str_to_lower(name))
@@ -42,14 +46,14 @@ states_sf <- read_sf("https://rstudio.github.io/leaflet/json/us-states.geojson")
 states_polygon <- map_data("state") |>
   select(region, group, order, lat, long)
 
-# Import State Population Data 
+# Loading state population data 
 # https://www.pewtrusts.org/en/research-and-analysis/articles/2022/04/25/a-third-of-states-lost-population-in-2021
 pop_data <- read_csv("https://raw.githubusercontent.com/elisefeld/elise_data_dump/main/2020_pop.csv") |>
   clean_names() |>
   mutate(state = str_to_lower(state))
 ```
 
-# Join Data
+## Joining Data
 
 ```{r}
 Mode <- function(x) {
@@ -159,39 +163,40 @@ nursing_summary <- within(nursing_summary, {revenue_cat <- NA
 distinct <- nursing_summary |>
   st_drop_geometry() |>
   distinct(tot_revenue_homes)
-  
+
 favstats(~tot_revenue_homes,  data = distinct)
-#Min: 5,175,111
-#SD: 4,133,371
-#Max: 27,659,592
 
+  
+```
 
-#checking for possible outliers/incorrect values in the data
-#I decided to remove two points:	
-#TWIN FOUNTAINS HOME of GA had a gross revenue of 1,300,406,865
-#SANILAC COUNTY MEDICAL CARE FACILITY of MI had 22,287 beds
-#This is important to note because after I removed them, Michigan changed to a slightly darker color on the first plot.
-
+## Outlier Analysis
+```{r}
 outliers_check <- nursing_data |>
   select(facility_name, state_code, gross_revenue, number_of_beds, snf_average_length_of_stay_total)
 
 nursing_data |>
   ggplot(aes(gross_revenue, number_of_beds)) +
-  geom_point()
+  geom_point() +
+  theme_bw() +
+  labs(x = "Gross Revenue",
+       y = "Number of Beds")
 
 nursing_data |>
   filter(number_of_beds < 1000 & gross_revenue < 1000000000) |>
   ggplot(aes(gross_revenue, number_of_beds)) +
-  geom_point()
-
-ggplot(nursing_data, aes(gross_revenue, snf_average_length_of_stay_total)) +
-geom_point()
+  geom_point() +
+  theme_bw() +
+  labs(x = "Gross Revenue",
+       y = "Number of Beds")
   
 ```
 
-# Static Plots
+Based on this analysis, two points were removed from the dataset.   
+- **Twin Fountains Home (Georgia)** had a gross revenue of $1,300,406,865    
+- **Sanilac County Medical Care Facility (Michigan)** had 22,287 beds.
 
-## Plot 1 (Numeric variable)
+
+# Plots 
 
 ```{r}
 nursing_summary |>
@@ -211,12 +216,7 @@ nursing_summary |>
 favstats(~beds_10k, data = nursing_summary)
 ```
 
-**Alt-Text:** This choropleth plot displays the 48 contiguous US states colored by the number of nursing home beds available per 10,000 people. The data ranges from about 21 to 101 beds per 10,000 people. The western half of the US has a relatively low number of beds, while the Midwest has more. Iowa has the greatest number of beds. The data were obtained from the [Skilled Nursing Facility Cost Report](https://data.cms.gov/provider-compliance/cost-report/skilled-nursing-facility-cost-report) and [2020 Decennial Population Data](https://www.pewtrusts.org/en/research-and-analysis/articles/2022/04/25/a-third-of-states-lost-population-in-2021).\
-*SANILAC COUNTY MEDICAL CARE FACILITY of MI had 22,287 beds and was removed from the data for this analysis.*
-
-## Plot 2 (categorical variable)
-
-**Note: I created both my categorical variables from numerical variables in the data set because there weren't any appropriate existing variables.**
+**Alt-Text:** This choropleth plot displays the 48 contiguous US states colored by the number of nursing home beds available per 10,000 people. The data ranges from about 21 to 101 beds per 10,000 people. The western half of the US has a relatively low number of beds, while the Midwest has more. Iowa has the greatest number of beds. The data were obtained from the [Skilled Nursing Facility Cost Report](https://data.cms.gov/provider-compliance/cost-report/skilled-nursing-facility-cost-report) and [2020 Decennial Population Data](https://www.pewtrusts.org/en/research-and-analysis/articles/2022/04/25/a-third-of-states-lost-population-in-2021).
 
 ```{r}
 nursing_summary |>
@@ -235,10 +235,6 @@ nursing_summary |>
 ```
 
 **Alt-Text:** This choropleth plot displays the 48 contiguous US states colored by the most common type of ownership for nursing homes in the state. The three types of ownership are Nonprofit, Proprietary and Governmental. All of the states are dominated by Proprietary nursing homes except for four: North Dakota, South Dakota and Minnesota have more Nonprofit nursing homes than other types and Indiana has more Governmental nursing homes. The data were obtained from the [Skilled Nursing Facility Cost Report](https://data.cms.gov/provider-compliance/cost-report/skilled-nursing-facility-cost-report).
-
-# Interactive Plots
-
-## Plot 1 (numeric)
 
 ```{r}
 nursing_summary <- nursing_summary |>
@@ -272,9 +268,6 @@ leaflet(nursing_summary) |>
               
 ```
 
-## Plot 2 (categorical)
-
-**Note: there are no observations in the \$20 million - \$25 million category so I did not provide a color for that level.**
 
 ```{r}
 nursing_summary <- nursing_summary |>
@@ -317,8 +310,4 @@ leaflet(nursing_summary) |>
             opacity = 0.7,
             title = "Gross Revenue",
             position = "bottomright")
-
 ```
-
-*TWIN FOUNTAINS HOME of GA had a gross revenue of \$1,300,406,865 and was removed for this analysis.*
-
