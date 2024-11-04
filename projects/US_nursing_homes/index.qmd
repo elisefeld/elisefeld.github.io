@@ -171,33 +171,6 @@ favstats(~tot_revenue_homes,  data = distinct)
   
 ```
 
-## Outlier Analysis
-
-```{r}
-outliers_check <- nursing_data |>
-  select(facility_name, state_code, gross_revenue, number_of_beds, snf_average_length_of_stay_total)
-
-nursing_data |>
-  ggplot(aes(gross_revenue, number_of_beds)) +
-  geom_point() +
-  theme_bw() +
-  labs(x = "Gross Revenue",
-       y = "Number of Beds")
-
-nursing_data |>
-  filter(number_of_beds < 1000 & gross_revenue < 1000000000) |>
-  ggplot(aes(gross_revenue, number_of_beds)) +
-  geom_point() +
-  theme_bw() +
-  labs(x = "Gross Revenue",
-       y = "Number of Beds")
-  
-```
-
-Based on this analysis, two points were removed from the dataset.\
-- **Twin Fountains Home (Georgia)** had a gross revenue of \$1,300,406,865\
-- **Sanilac County Medical Care Facility (Michigan)** had 22,287 beds.
-
 # Plots
 
 ```{r}
@@ -312,3 +285,30 @@ leaflet(nursing_summary) |>
             title = "Gross Revenue",
             position = "bottomright")
 ```
+
+## Outlier Analysis
+
+```{r}
+outliers_check <- nursing_data |>
+  select(facility_name, state_code, gross_revenue, number_of_beds, snf_average_length_of_stay_total)
+
+nursing_data |>
+  ggplot(aes(gross_revenue, number_of_beds)) +
+  geom_point() +
+  theme_bw() +
+  labs(x = "Gross Revenue",
+       y = "Number of Beds")
+
+nursing_data |>
+  filter(number_of_beds < 1000 & gross_revenue < 1000000000) |>
+  ggplot(aes(gross_revenue, number_of_beds)) +
+  geom_point() +
+  theme_bw() +
+  labs(x = "Gross Revenue",
+       y = "Number of Beds")
+  
+```
+
+Based on this analysis, two points were removed from the dataset.\
+- **Twin Fountains Home (Georgia)** had a gross revenue of \$1,300,406,865\
+- **Sanilac County Medical Care Facility (Michigan)** had 22,287 beds.
