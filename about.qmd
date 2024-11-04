@@ -1,9 +1,25 @@
 ---
-title: "about"
+title: "About Me"
 ---
 
-About this site
+I'm currently a junior at St. Olaf College, working towards a bachelors' in Bioinformatics (individual major track). My academic pursuits reflect my interests in rare disease research, forensic science, and conservation ecology. I enjoy leveraging the power of data science in order to solve complex problems across disciplines.
 
-```{r}
-1 + 1
-```
+# Previous Projects
+
+## Lipid Droplet Counting in Tetrahymena Thermophila
+
+The Lipid Lab at St. Olaf investigates factors affecting the formation of lipid droplets in the model organism *Tetrahymena thermophila*. To gather data, students in lab have manually counted lipid droplets. Each organism can have up to several hundred droplets, and each image from the microscope can have several organisms. I created a program, lipidcountr, that uses image processing to automate the counting of lipid droplets in these cells.  
+
+**Talk:** Quantification of Lipid Droplets in *Tetrahymena thermophila* at the 2023 Midwest Protozoology Conference in Galesburg, Illinois.
+
+## Impact of Mental Health Stigma on Outcomes in Pheochromocytoma
+
+Pheochromocytoma and Paraganglioma are rare neuroendocrine tumors that are often misdiagnosed. In this research project, I surveyed patients who were diagnosed with this condition on their experiences navigating the healthcare system. It was presented at the 2022 HOSA International Leadership Conference in Nashville, Tennessee.
+
+[View Poster](https://drive.google.com/file/d/1oLMaPqAyGEI8tLmzGoudvCOvxI1eoXC7/view?usp=sharing)
+
+## Autofilling the Standard Form 180
+
+The GSA standard form 180 (SF180) is a form necessary for requesting military records from the National Archives per [36 CFR 1233.18(d)](https://www.law.cornell.edu/cfr/text/36/1233.18). When requesting the records of several military personnel, the completion of a large quantity of forms is time consuming and error prone. While requesting records for the missing sailors of the U.S.S Turner, I wrote a simple python script that enables researchers to automatically fill a large number of these forms using a spreadsheet template.
+
+**For more examples of my work in statistics and data science, see the project tab.**

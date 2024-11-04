@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>About – Elise Hachfeld</title>
+<title>About Me – Elise Hachfeld</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -19,40 +19,6 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
-}
-/* CSS for syntax highlighting */
-pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { line-height: 1.25; }
-pre > code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
-}
-pre.numberSource code
-  { counter-reset: source-line 0; }
-pre.numberSource code > span
-  { position: relative; left: -4em; counter-increment: source-line; }
-pre.numberSource code > span > a:first-child::before
-  { content: counter(source-line);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-  }
-pre.numberSource { margin-left: 3em;  padding-left: 4px; }
-div.sourceCode
-  {   }
-@media screen {
-pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -132,7 +98,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </li>  
   <li class="nav-item">
     <a class="nav-link" href="./projects.html"> 
-<span class="menu-text">projects</span></a>
+<span class="menu-text">Projects</span></a>
   </li>  
 </ul>
           </div> <!-- /navcollapse -->
@@ -145,15 +111,26 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#previous-projects" id="toc-previous-projects" class="nav-link active" data-scroll-target="#previous-projects">Previous Projects</a>
+  <ul class="collapse">
+  <li><a href="#lipid-droplet-counting-in-tetrahymena-thermophila" id="toc-lipid-droplet-counting-in-tetrahymena-thermophila" class="nav-link" data-scroll-target="#lipid-droplet-counting-in-tetrahymena-thermophila">Lipid Droplet Counting in Tetrahymena Thermophila</a></li>
+  <li><a href="#impact-of-mental-health-stigma-on-outcomes-in-pheochromocytoma" id="toc-impact-of-mental-health-stigma-on-outcomes-in-pheochromocytoma" class="nav-link" data-scroll-target="#impact-of-mental-health-stigma-on-outcomes-in-pheochromocytoma">Impact of Mental Health Stigma on Outcomes in Pheochromocytoma</a></li>
+  <li><a href="#autofilling-the-standard-form-180" id="toc-autofilling-the-standard-form-180" class="nav-link" data-scroll-target="#autofilling-the-standard-form-180">Autofilling the Standard Form 180</a></li>
+  </ul></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">About</h1>
+<h1 class="title">About Me</h1>
 </div>
 
 
@@ -170,15 +147,27 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>About this site</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span> <span class="sc">+</span> <span class="dv">1</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 2</code></pre>
-</div>
-</div>
+<p>I’m currently a junior at St.&nbsp;Olaf College, working towards a bachelors’ in Bioinformatics (individual major track). My academic pursuits reflect my interests in rare disease research, forensic science, and conservation ecology. I enjoy leveraging the power of data science in order to solve complex problems across disciplines.</p>
+<section id="previous-projects" class="level1">
+<h1>Previous Projects</h1>
+<section id="lipid-droplet-counting-in-tetrahymena-thermophila" class="level2">
+<h2 class="anchored" data-anchor-id="lipid-droplet-counting-in-tetrahymena-thermophila">Lipid Droplet Counting in Tetrahymena Thermophila</h2>
+<p>The Lipid Lab at St.&nbsp;Olaf investigates factors affecting the formation of lipid droplets in the model organism <em>Tetrahymena thermophila</em>. To gather data, students in lab have manually counted lipid droplets. Each organism can have up to several hundred droplets, and each image from the microscope can have several organisms. I created a program, lipidcountr, that uses image processing to automate the counting of lipid droplets in these cells.</p>
+<p><strong>Talk:</strong> Quantification of Lipid Droplets in <em>Tetrahymena thermophila</em> at the 2023 Midwest Protozoology Conference in Galesburg, Illinois.</p>
+</section>
+<section id="impact-of-mental-health-stigma-on-outcomes-in-pheochromocytoma" class="level2">
+<h2 class="anchored" data-anchor-id="impact-of-mental-health-stigma-on-outcomes-in-pheochromocytoma">Impact of Mental Health Stigma on Outcomes in Pheochromocytoma</h2>
+<p>Pheochromocytoma and Paraganglioma are rare neuroendocrine tumors that are often misdiagnosed. In this research project, I surveyed patients who were diagnosed with this condition on their experiences navigating the healthcare system. It was presented at the 2022 HOSA International Leadership Conference in Nashville, Tennessee.</p>
+<p><a href="https://drive.google.com/file/d/1oLMaPqAyGEI8tLmzGoudvCOvxI1eoXC7/view?usp=sharing">View Poster</a></p>
+</section>
+<section id="autofilling-the-standard-form-180" class="level2">
+<h2 class="anchored" data-anchor-id="autofilling-the-standard-form-180">Autofilling the Standard Form 180</h2>
+<p>The GSA standard form 180 (SF180) is a form necessary for requesting military records from the National Archives per <a href="https://www.law.cornell.edu/cfr/text/36/1233.18">36 CFR 1233.18(d)</a>. When requesting the records of several military personnel, the completion of a large quantity of forms is time consuming and error prone. While requesting records for the missing sailors of the U.S.S Turner, I wrote a simple python script that enables researchers to automatically fill a large number of these forms using a spreadsheet template.</p>
+<p><strong>For more examples of my work in statistics and data science, see the project tab.</strong></p>
 
 
+</section>
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
