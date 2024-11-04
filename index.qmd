@@ -14,4 +14,4 @@ about:
       href: https://www.linkedin.com/in/elise-hachfeld-b4a068191/
 ---
 
-Hello! My name is Elise Hachfeld and I am a junior at [St. Olaf College](https://wp.stolaf.edu/). I am majoring in Bioinformatics with concentrations in statistics & data science, neuroscience, and nordic studies. 
+Hello! My name is Elise Hachfeld and I am a junior at [St. Olaf College](https://wp.stolaf.edu/). I am majoring in Bioinformatics with concentrations in statistics & data science, neuroscience, and nordic studies.
