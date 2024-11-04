@@ -8,10 +8,11 @@ website:
   navbar:
     left:
       - href: index.qmd
-        text: home
+        text: Home
       - href: about.qmd
-        text: about
+        text: About Me
       - href: projects.qmd
+        text: Projects
   page-footer: 
     background: light
     left: © 2024 Elise Hachfeld
